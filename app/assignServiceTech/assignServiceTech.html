@@ -1,0 +1,8 @@
+﻿<div ng-if="taskList.open" class="row bulk-assign" ng-show="taskList.isAssignServiceTechOpen">
+	<div class="col-xs-4">
+		<h4 style="margin-top: 0px;">Assign Selected Tasks to Service Tech:</h4>
+        <a href="#" editable-text="post.ServiceTech" ng-model="post.ServiceTech" e-typeahead="x as x.TypeaheadDisplay for x in suggestServiceTech($viewValue)" e-required e-placeholder="Enter Service Tech name or email" onbeforesave="checkUser($data);" oncancel="$data = null;" onaftersave="$data = null">{{ typeaheadDisplayServiceTech(post.ServiceTech) || "Select Service Tech" }}</a>
+		<button class="btn btn-primary btn-block" style="margin-top: 20px;" ng-click="assignServiceTech()" ng-show="serviceTech.TypeaheadDisplay"><i class="glyphicon glyphicon-wrench"></i>&nbsp;Assign Service Tech</button>
+		<button class="btn btn-warning btn-block" style="margin-top: 10px;" ng-click="cancelAssignServiceTech()"><i class="glyphicon glyphicon-remove"></i>&nbsp;Cancel</button>
+	</div>
+</div>

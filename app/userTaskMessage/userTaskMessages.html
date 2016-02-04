@@ -1,0 +1,35 @@
+﻿<div class="messages" ng-cancel-drag>
+	<h4>Messages:</h4>
+	<div class="posts">
+		<ul class="list-group">
+			<li ng-repeat="msg in messages">
+				<h3 ng-bind="msg.CreatedByName"></h3>
+				<time ng-bind="msg.DateCreated | date:'MM/dd/yyyy'"></time>
+				<hr />
+				<p ng-bind="msg.Message"></p>
+			</li>
+		</ul>
+	</div>
+    <div ng-show="$parent.isVisible.isMessage">
+        <div class="request">
+            <textarea id="target" rows="1" style="overflow: hidden; min-height: 1em; height: 50px;" placeholder="post message" ng-model="newMessage.Message"></textarea>
+            <div class="autogrow-textarea-mirror" style="display: none; word-wrap: break-word; padding: 2px; width: 322px; font-family: arial; font-size: 14px; line-height: normal;">
+                .<br>.
+            </div>
+        </div>
+        <button class="btn btn-primary btn-block" ng-click="saveUserTaskMessage()">Send Message</button>
+    </div>
+	<div class="row">
+		<div class="col-xs-12" ng-show="$parent.isVisible.isViewableByOwner">
+			<label><input type="checkbox" ng-model="newMessage.VisibleByOwner" />&nbsp;Viewable by Owner</label>
+		</div>
+	</div>
+	<div class="row" style="display: none">
+		<div class="col-xs-12">
+			<h4>Upload media:</h4>
+			<button class="btn btn-primary btn-block browse" disabled>Add image or video</button>
+			<span class="center-block" style="text-align: center; margin-top: 6px; margin-bottom: 6px;">-- or --</span>
+			<div class="well drop-zone">Drop images or videos here</div>
+		</div>
+	</div>
+</div>

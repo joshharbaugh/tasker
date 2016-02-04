@@ -1,0 +1,16 @@
+﻿<div class="datetime-filters">
+    <ul class="nav nav-tabs col-xs-12" style="padding-left: 15px">
+        <li class="" ng-class="{active: vm == 'MostRecent'}">
+            <a style="padding: 5px 8px" href="javascript:;" ng-click="applyDatetimeFilter('MostRecent')">Recent</a>
+        </li>
+        <li class="" ng-class="{active: vm == 'Today'}">
+            <a style="padding: 5px 8px" href="javascript:;" ng-click="applyDatetimeFilter('Today')">Today</a>
+        </li>
+        <li class="" ng-class="{active: vm == 'ThisWeek'}">
+            <a style="padding: 5px 8px" href="javascript:;" ng-click="applyDatetimeFilter('ThisWeek')">This Week</a>
+        </li>
+        <li class="" ng-class="{active: vm == 'ThisMonth'}">
+            <a style="padding: 5px 8px" href="javascript:;" ng-click="applyDatetimeFilter('ThisMonth')">This Month</a>
+        </li>
+    </ul>
+</div>

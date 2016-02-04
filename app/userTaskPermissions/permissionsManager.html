@@ -1,0 +1,86 @@
+﻿<div id="container-wrapper">
+	<div class="container-primary">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="panel panel-primary panel-permissions">
+					<div class="panel-heading">
+						<h3 class="panel-title">Add Permissions</h3>
+					</div>
+					<div class="col-xs-12 permissions-controls">
+						<table class="table-permissions">
+							<thead>
+								<tr>
+									<th style="width: 30%">
+										Select Service Provider
+									</th>
+									<th style="text-align: center;">
+										<a href="javascript:;" tooltip="{{permissionTypes[0].description}}" ng-bind="permissionTypes[0].title">
+										</a>
+									</th>
+									<th style="text-align: center;">
+										<a href="javascript:;" tooltip="{{permissionTypes[1].description}}" ng-bind="permissionTypes[1].title">
+										</a>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td style="text-align: left;">
+										<a href="#" editable-text="selectedPro" e-typeahead="x as x.TypeaheadDisplay for x in getSuggestedServiceProviders($viewValue)" e-style="width: 60%" e-required e-placeholder="Enter User or Business name or email" onbeforesave="selectPro($data)">{{ selectedPro.TypeaheadDisplay  || "Select Service Provider" }}</a>
+									</td>
+									<td style="text-align: center;">
+										<input type="checkbox" ng-model="selectedPro.IsDenyCreatingTask" />
+									</td>
+									<td style="text-align: center;">
+										<input type="checkbox" ng-model="selectedPro.IsDenyViewingTaskHistory" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<button type="button" class="btn btn-secondary pull-right" ng-click="updatePermissions('add')">Save Permissions</button>
+					</div>
+				</div>
+			</div>
+			<div class="col-xs-12">
+				<div class="panel panel-primary panel-permissions">
+					<div class="panel-heading">
+						<h3 class="panel-title">Existing Permissions</h3>
+					</div>
+					<div class="col-xs-12 permissions-controls">
+						<table class="table-permissions">
+							<thead>
+								<tr>
+									<th style="width: 30%">
+										Service Provider
+									</th>
+									<th style="text-align: center;">
+										<a href="javascript:;" tooltip="{{permissionTypes[0].description}}" ng-bind="permissionTypes[0].title">
+										</a>
+									</th>
+									<th style="text-align: center;">
+										<a href="javascript:;" tooltip="{{permissionTypes[1].description}}" ng-bind="permissionTypes[1].title">
+										</a>
+									</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr ng-repeat="permission in permissions">
+									<td style="text-align: left;">
+										{{ permission.ServiceProvider.TypeaheadDisplay }}
+									</td>
+									<td style="text-align: center;">
+										<input type="checkbox" ng-model="permission.IsDenyCreatingTask" />
+									</td>
+									<td style="text-align: center;">
+										<input type="checkbox" ng-model="permission.IsDenyViewingTaskHistory" />
+									</td>
+								</tr>
+							</tbody>
+						</table>
+						<button type="button" class="btn btn-secondary pull-right" ng-click="updatePermissions('update')">Update Permissions</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

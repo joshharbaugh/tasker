@@ -1,0 +1,50 @@
+﻿<div class="row">
+	<div class="linked-media col-xs-12" ng-show="linkedMedia.length > 0">
+		<carousel interval="0" disable-ng-animate>
+			<slide ng-repeat="slide in linkedMedia" active="slide.active">
+				<div ng-if="slide.LinkedItemTypeId == 1" class="image-container">
+					<img ng-src="/Images/{{slide.FileTypeIcon}}" class="slide" onerror="this.src='/images/no_toy_image.png'" ng-click="location.href='{{slide.Uri}}'">
+				</div>
+				<div ng-if="slide.LinkedItemTypeId == 2" class="image-container">
+					<img ng-src="{{slide.Uri}}" class="slide" onerror="this.src='/images/no_toy_image.png'" ng-click="location.href='{{slide.Uri}}'">
+				</div>
+				<div ng-if="slide.LinkedItemTypeId==3 && slide.active" class="image-container" id="vidlyVideocontainer-{{slide.RowId}}" ng-bind-html="renderedHtml" ng-init="renderHtml(slide)"></div>
+				<div class="carousel-caption">
+					<a href="#" class="media-description" editable-text="slide.Description" e-style="width: 70%" e-required onbeforesave="updateDescription(slide, $data)">
+						{{slide.Description || "Enter Description" }}
+					</a>
+					<br />
+					<a class="MagicThumb" href="{{slide.Uri}}" rel="slideshow-effect: expand; expand-speed: 1000; restore-speed: 1000; buttons-position:top right; buttons-display:close; caption-source:a.alt" alt="{{slide.Description}}" title="Preview" ng-if="slide.LinkedItemTypeId == 2"><i class="glyphicon glyphicon-search"></i></a>
+					<a href="{{slide.Uri}}" title="Download"><i class="glyphicon glyphicon-floppy-disk"></i></a>
+					<a href="javascript:;" ng-click="deleteLinkedMedia(slide.RowId)" title="Delete" ng-if="!$parent.$parent.isVisible.taskCompleted && slide.CreatedBy == viewingUserRowId"><i class="glyphicon glyphicon-trash"></i></a>
+					<span ng-if="slide.IsShowPrivate"><input type="checkbox" ng-model="slide.IsPrivate" ng-change="toggleVisibility(slide, 'private')" />&nbsp;Private</span>
+					<span ng-if="slide.IsShowVisibleByOwner"><input type="checkbox" ng-model="slide.IsVisibleByOwner" ng-change="toggleVisibility(slide, 'visibleByOwner')" />&nbsp;Visible To Owner</span>
+					<span ng-if="slide.IsShowVisibleBySubcontractor"><input type="checkbox" ng-model="slide.IsVisibleBySubcontractor" ng-change="toggleVisibility(slide, 'visibleBySubcontractor')" />&nbsp;Visible To Subcontractor</span>
+					<span ng-if="slide.IsShowVisibleByPro"><input type="checkbox" ng-model="slide.IsVisibleByPro" ng-change="toggleVisibility(slide, 'visibleByPro')" />&nbsp;Visible To Pro</span>
+				</div>
+			</slide>
+		</carousel>
+	</div>
+</div>
+<div class="row" ng-show="!isSampleTaskLinkedMedia">
+    <div class="drop-box col-xs-12" ng-model="uploadFiles" accept="'.doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,image/*,video/*'" ng-accept="'application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/*,video/*'" ng-multiple="true" allow-dir="false" drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" ng-file-select="" ng-file-change="addLinkedMedia()" ng-file-drop="">
+        Click to select Files or<br />
+        drag and drop your Files here
+    </div>
+    <div class="drop-box col-xs-12" ng-no-file-drop="">
+        File Drag&amp;Drop not supported on your browser
+    </div>
+    <div class="media-progress col-xs-12">
+        <ul class="response">
+            <li ng-repeat="f in uploadFiles" class="sel-file ng-binding ng-scope" ng-show="f.progress < 100 && !f.upload.aborted">
+                <img class="thumb" ng-show="f.dataUrl != null" ng-src="{{f.dataUrl}}">
+                <span class="progress-media" ng-show="f.progress >= 0">
+                    <div style="width: {{f.progress}}%;" ng-bind="f.progress + '%'"></div>
+                </span>
+                <i class="glyphicon glyphicon-remove-sign" ng-show="f.progress < 100 && !f.upload.aborted" ng-click="uploadAbort(f)" title="Abort"></i>
+                <br />
+                <span>{{f.name}} {{f.size}} B</span>
+            </li>
+        </ul>
+    </div>
+</div>

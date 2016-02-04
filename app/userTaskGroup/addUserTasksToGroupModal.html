@@ -1,0 +1,16 @@
+﻿<div class="addUserTasksToGroupModal taskModal">
+    <div class="modal-header">
+        <h3 class="modal-title">Add To Group</h3>
+    </div>
+    <div class="modal-body">
+        <div class="list">
+            <div class="cf listing" ng-repeat="userTask in tasksWithNoGroup">
+                <input type="checkbox" ng-value="userTask.RowId" ng-click="toggleSelectedTask(userTask.RowId)"> {{userTask.Title}}
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary done" ng-click="addTasksToGroup()">Apply</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

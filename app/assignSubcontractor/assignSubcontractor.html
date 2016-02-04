@@ -1,0 +1,8 @@
+﻿<div ng-if="taskList.open" class="row bulk-assign" ng-show="taskList.isAssignSubcontractorOpen">
+	<div class="col-xs-4">
+		<h4 style="margin-top: 0px;">Assign Selected Tasks to Subcontractor:</h4>
+		<select class="form-control input-sm" style="width: 100%;" ng-model="post.subcontractorRowId" ng-options="sc.RowId as sc.UserBusinessName for sc in subcontractors"></select>
+		<button class="btn btn-primary btn-block" style="margin-top: 20px;" ng-click="assignSubcontractor()" ng-show="post.subcontractorRowId != 0"><i class="glyphicon glyphicon-wrench"></i>&nbsp;Assign Subcontractor</button>
+		<button class="btn btn-warning btn-block" style="margin-top: 10px;" ng-click="cancelAssignSubcontractor()"><i class="glyphicon glyphicon-remove"></i>&nbsp;Cancel</button>
+	</div>
+</div>

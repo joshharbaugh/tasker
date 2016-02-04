@@ -1,0 +1,63 @@
+﻿<div class="task-panel" style="margin: 0 0 18px 0; padding: 0px;" ng-class="{'isCreateOnBehalf': isCreateOnBehalf}" ng-controller="UserTaskOpsCodesController">
+    <form ng-submit="createUserTask()" id="tourStopCreateNewTask" class="newOpCode">
+        <input type="text" placeholder="Enter child Op Code here..." ng-show="isChildOpCode" ng-model="newOpCode.Title" maxlength="255" ng-class="{'newUserTaskShort': newOpCode.Title}">
+    </form>
+    <div style="padding: 15px">
+        <div>Select Op Code</div>
+        <div style="height: 30px;">
+            <select class="selectpicker"
+                    id="opcodesSelect" 
+                    data-live-search="true" 
+                    multiple 
+                    data-selected-text-format="count>3" 
+                    ng-model="newOpCode.OpCodes">
+            </select>
+        </div>
+    </div>
+    <div class="meta" ng-show="newOpCode.OpCodes && newOpCode.OpCodes.length" style="padding: 15px">
+        <div style="border-top: 1px solid #eee;">
+            <h4>Request Approval: <label>(optional)</label></h4>
+            <div class="request-estimate">
+                <label>
+                    <input type="checkbox" ng-model="newOpCode.IsRequestApproval" />
+                    &nbsp;Request Approval
+                </label>
+            </div>
+            <h4>Provide Estimate: <label>(optional)</label></h4>
+            <div class="request-estimate">
+                <label>
+                    <input type="checkbox" ng-model="newOpCode.IsRequestEstimateChecked" />
+                    &nbsp;Provide Estimate
+                </label>
+            </div>
+            <div class="request-estimate" ng-show="newOpCode.IsRequestEstimateChecked">
+                <h4>Estimate Amount:</h4>
+                <input type="text" ng-model="newOpCode.EstimateAmount" class="estimate-currency form-control" ng-currency />
+            </div>
+            <h4>Estimated Completion Date: <label>(optional)</label></h4>
+            <div class="form-group form-group-sm requested-completion-datepicker">
+                <div class="input-group">
+                    <input type="text" placeholder="Enter Completion Date (optional)" datepicker-popup="MM/dd/yyyy" ng-model="newOpCode.RequestedCompletionDate" is-open="opened.requestedCompletionDate" min-date="today" datepicker-options="dpOptions()" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-click="openDatepicker($event, 'requestedCompletionDate')" style="margin-right: 0px;"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div style="border-top: 1px solid #eee;">
+            <h4>Client Stuff: <label>(optional)</label></h4>
+            <i class="pull-right glyphicon glyphicon-remove-sign filter-reset" ng-click="newOpCode.ToyRowId = null"></i>
+            <select class="form-control input-sm" style="width: 95%;" ng-model="newOpCode.ToyRowId" ng-options="toy.RowId as toy.ToyName for toy in clientToys" ng-change="getToyEquipment(newOpCode.ToyRowId)"></select>
+            <h4 ng-show="newOpCode.ToyRowId">Client Equipment: <label>(optional)</label></h4>
+            <i class="pull-right glyphicon glyphicon-remove-sign filter-reset" ng-click="newOpCode.EquipmentRowId = null" ng-show="newOpCode.ToyRowId"></i>
+            <select class="form-control input-sm" style="width: 95%;" ng-model="newOpCode.EquipmentRowId" ng-options="eq.ToyEquipmentRowId as eq.ReferenceName for eq in toyEquipment" ng-show="newOpCode.ToyRowId"></select>
+        </div>
+    </div>
+    <div class="meta" style="margin-bottom: 15px;">
+        <div>
+            <button class="btn btn-warning btn-block" ng-click="cancel()"><i class="glyphicon glyphicon-remove"></i>&nbsp;Cancel</button>
+            <button class="btn btn-success btn-block" ng-click="saveOpCodes()" ng-show="newOpCode.UserRowId && newOpCode.OpCodes && newOpCode.OpCodes.length"><i class="glyphicon glyphicon-ok"></i>&nbsp;Add Op Codes</button>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">$('.selectpicker').selectpicker();</script>

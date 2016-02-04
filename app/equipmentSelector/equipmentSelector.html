@@ -1,0 +1,26 @@
+﻿<h4 ng-hide="isClient">My Stuff: <label ng-show="isEdit">(optional)</label></h4>
+<h4 ng-show="isClient">Client Stuff: <label>(optional)</label></h4>
+<i class="pull-right glyphicon glyphicon-remove-sign filter-reset" ng-click="clearToyEqupment(true)" ng-show="isEdit"></i>
+<select class="form-control input-sm" ng-model="selectedToyRowId" ng-options="toy.RowId as toy.ToyName for toy in userToys" ng-change="changeToy()" style="width: 100%;" ng-show="isEdit"></select>
+<p ng-hide="isEdit">{{ selectedToyName }}</p>
+<h4 ng-show="selectedToyRowId && isClient">Client Equipment: <label ng-show="isEdit">(optional)</label><br /></h4>
+<h4 ng-show="selectedToyRowId && !isClient">My Equipment: <label ng-show="isEdit">(optional)</label><br /></h4>
+<i class="pull-right glyphicon glyphicon-remove-sign filter-reset" ng-click="clearToyEqupment()" ng-show="selectedToyRowId && isEdit"></i>
+<div class="row">
+	<div class="col-lg-12">
+		<button type="button" id="ddmEquipment" class="btn btn-default btn-block dropdown-toggle" data-toggle="dropdown" aria-expanded="true" ng-show="selectedToyRowId && isEdit">
+			<i class="glyphicon glyphicon-cog glyphicon-cog-normal"></i>&nbsp;Add Equipment
+		</button>
+		<ul class="dropdown-menu scrollable-menu" role="menu" aria-labelledby="ddmEquipment">
+			<li ng-repeat="eq in toyEquipment | filter: { IsActive: null || false }"><a ng-click="equipmentSelection(eq)">{{eq.ReferenceName}}</a></li>
+		</ul>
+	</div>
+</div>
+<div class="meta status" style="margin: 10px 0;">
+	<div class="selected-equipment" ng-repeat="eq in toyEquipment | filter: { IsActive: true }">
+		{{eq.ReferenceName}}<br />
+		<span class="usage-log">{{eq.LastLoggedUsageDisplay}}</span>
+		<i class="pull-right glyphicon glyphicon-remove-sign equipment-remove" ng-click="removeEqupment(eq)" ng-show="isEdit"></i>
+	</div>
+	<button class="btn btn-success btn-block" ng-show="isSave" ng-click="saveBoatEquipment()" ng-disabled="isSampleTask"><i class="glyphicon glyphicon-cog glyphicon-cog-normal"></i>&nbsp;Save Boat & Equipment</button>
+</div>

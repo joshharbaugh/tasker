@@ -1,0 +1,20 @@
+﻿<div class="assignUserTaskToGroupModal taskModal">
+    <div class="modal-header">
+        <h3 class="modal-title">Link Task Into...</h3>
+    </div>
+    <div class="modal-body">
+        <div class="list">
+            <div class="cf listing" ng-repeat="group in groups">
+                <input type="radio" ng-model="$parent.selectedGroup" ng-value="group" ng-show="group.RowId">
+                <a ng-hide="group.RowId" href="#" editable-text="group.Title" onbeforesave="$parent.addGroup(group)">
+                    {{ group.Title }}</a>
+                <span ng-show="group.RowId">{{group.Title}}</span>
+                <hr ng-hide="group.RowId" />
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary done" ng-click="assignGroup()">Apply</button>
+        <button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+    </div>
+</div>

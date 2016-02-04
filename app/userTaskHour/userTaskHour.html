@@ -1,0 +1,124 @@
+﻿<script type="text/ng-template" id="viewReceipt.html">
+    <div class="modal-header">
+        <h1 class="modal-title" style="font-size:1.4em;">Preview: <em ng-bind="receipt.name"></em></h1>
+    </div>
+    <div class="modal-body">
+        <img ng-src="{{receipt.Uri}}" style="width: 100%" />
+    </div>
+    <div class="modal-footer" style="margin-left:-10px;margin-right:-10px;">
+        <a class="hidden-xs hidden-sm btn btn-primary" ng-href="{{receipt.Uri}}" ng-click="close()">Download</a>
+        <button class="btn btn-default" ng-click="close()">Close</button>
+    </div>
+</script>
+<div class="loading pull-left" ng-show="isLoading" style="width: 100%;">
+	<div class="progress progress-striped active" style="margin-bottom: 0px; height: 4px; border-radius: 0px;">
+		<div class="progress-bar progress-bar-danger" role="progressbar" style="width: 100%;"></div>
+	</div>
+</div>
+<p class="text-muted" ng-show="userTaskHours.length > 0"><i class="glyphicon glyphicon-info-sign"></i> Double-click an entry to edit it</p>
+<div class="list-group userTaskLogs" style="max-height: 253px; overflow: auto;">
+	<div ng-if="!isLoading && userTaskHours.length == 0">No hours logged</div>
+	<div class="list-group-item log-hours" ng-repeat="logEntry in userTaskHours track by $index" ng-class-even="'log-hours-even'" ng-click="userTaskHourRead(logEntry.RowId)">
+		<div class="list-group-item-text">
+			<div style="margin-top: 0px; padding-top: 0px; border-top: none;">
+				<strong>Date:</strong> <span ng-bind="logEntry.DateCreated | date:'medium'"></span>
+			</div>
+			<div ng-if="logEntry.StartTime">
+				<strong>Start Time:</strong> <span ng-bind="logEntry.StartTime"></span>
+			</div>
+			<div ng-if="logEntry.EndTime">
+				<strong>End Time:</strong> <span ng-bind="logEntry.EndTime"></span>
+			</div>
+			<div>
+				<strong>Hours worked:</strong> <span ng-bind="logEntry.TotalHours"></span>
+			</div>
+			<div ng-hide="$parent.$parent.isServiceTechTask">
+				<strong>Hours billed:</strong> <span ng-bind="logEntry.TotalBillableHours"></span>
+			</div>
+			<div>
+				<strong>Service Tech:</strong> <span ng-bind="logEntry.ServiceTechDisplayName"></span>
+			</div>
+			<div ng-if="logEntry.Notes">
+				<strong>Note:</strong> <span ng-bind="logEntry.Notes"></span>
+			</div>
+			<div ng-show="logEntry.UserTaskParts.length > 0">
+				<strong>Parts Used:</strong>
+				<ul style="padding-left: 0px; margin: 0;">
+					<li ng-repeat="part in logEntry.UserTaskParts track by $index" ng-bind="part.Name"></li>
+				</ul>
+			</div>
+			<div ng-show="logEntry.Receipts.length > 0">
+				<strong>Receipts:</strong>
+				<ul style="padding-left: 0px; margin: 5px 0 0 0;">
+					<li ng-repeat="receipt in logEntry.Receipts track by receipt.RowId">
+						<i class="glyphicon glyphicon-file"></i>
+                        <a ng-bind="receipt.name" ng-click="openModal(receipt)" data-toggle="tooltip" data-placement="top" title="Preview receipt"></a>
+					</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+<form ng-submit="userTaskHourPersist(userTaskHour)">
+    <div class="form-group log-hour-container">
+        <label>Start Time (optional):</label>
+        <timepicker class="form-control" ng-model="userTaskHour.StartTime" ng-change="updateTotalHours()" hour-step="1" minute-step="1" show-meridian="true"></timepicker>
+    </div>
+    <div class="form-group log-hour-container">
+        <label>End Time (optional):</label>
+        <timepicker class="form-control" ng-model="userTaskHour.EndTime" ng-change="updateTotalHours()" hour-step="1" minute-step="1" show-meridian="true"></timepicker>
+    </div>
+	<div class="form-group">
+		<label>Hours worked:</label>
+		<input class="form-control" type="number" step="any" placeholder="Enter hours" ng-model="userTaskHour.TotalHours" required />
+	</div>
+	<div class="form-group" ng-hide="$parent.isServiceTechTask">
+		<label>Billable hours:</label>
+		<input class="form-control" type="number" step="any" placeholder="Enter billable hours" ng-model="userTaskHour.TotalBillableHours" />
+	</div>
+	<div class="form-group" ng-show="userTaskHour.UserTaskParts.length > 0">
+		<label>Parts Used:</label>
+		<table class="table table-striped table-hovered" ng-controller="UserTaskPartController">
+			<tr ng-repeat="part in userTaskHour.UserTaskParts track by $index">
+				<td>
+					<div>
+						<span ng-bind="part.Name"></span>
+						<i ng-click="deletePart(part, $index)" class="glyphicon glyphicon-remove pull-right"></i>
+					</div>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="form-group input-group" style="margin-bottom: 4px;" ng-controller="UserTaskPartController">
+		<input class="form-control" type="text" placeholder="Part name or number..." ng-model="userTaskHour.ItemNumber" />
+		<span class="input-group-btn">
+			<button class="btn" type="button" ng-click="addPart(userTaskHour.ItemNumber)" style="margin-right: 0px;">Add</button>
+		</span>
+	</div>
+	<div class="recepts-label">
+		<label for="logReceipts">Attach receipt(s) <small>(optional)</small></label>
+	</div>
+	<div>
+		<textarea class="form-control input-sm" maxlength="500" style="margin-top: 2px;" ng-model="userTaskHour.Notes" placeholder="Add log notes here..."></textarea>
+	</div>
+	<div class="row">
+		<div class="drop-box drop-box-sm col-lg-12" ng-model="uploadFiles" accept="'.doc,.docx,.xls,.xlsx,.ppt,.pptx,.pdf,image/*,video/*'" ng-accept="'application/pdf,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-powerpoint,application/vnd.openxmlformats-officedocument.presentationml.presentation,image/*,video/*'" ng-multiple="true" allow-dir="false" drag-over-class="{accept:'dragover', reject:'dragover-err', delay:100}" ng-file-select="" ng-file-change="addFiles()" ng-file-drop="">
+			Click to select Files or<br />
+			drag and drop your Files here
+		</div>
+	</div>
+	<div class="col-xs-12 receipts">
+		<ul class="response">
+			<li ng-repeat="f in userTaskHour.Receipts" class="sel-file">
+				<i class="glyphicon glyphicon-file"></i>
+				<span class="receipt-file">{{f.name}}</span>
+				<i class="glyphicon glyphicon-remove-sign pull-right" ng-click="deleteFile(f, $index)" title="Remove" style="font-size: 11px; margin-top: 3px;"></i>
+			</li>
+		</ul>
+	</div>
+	<button type="submit" class="btn btn-success btn-block">
+		<span ng-if="!userTaskHour.RowId">Submit</span>
+		<span ng-if="userTaskHour.RowId">Update</span>
+	</button>
+	<button ng-if="userTaskHour.RowId" type="button" class="btn btn-danger btn-block" ng-click="userTaskHourDelete(userTaskHour.RowId)">Remove</button>
+</form>

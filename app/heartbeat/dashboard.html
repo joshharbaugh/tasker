@@ -1,0 +1,121 @@
+﻿<script src="//cdnjs.cloudflare.com/ajax/libs/packery/1.4.3/packery.pkgd.min.js"></script>
+<script src="//npmcdn.com/draggabilly@2.1/dist/draggabilly.pkgd.js"></script>
+<link href="/Content/site/heartbeat.css" rel="stylesheet" />
+<script type="text/ng-template" id="sendMessageModal.html">
+    <div class="modal-header">
+        <h1 class="modal-title">Send Message</h1>
+    </div>
+    <div class="modal-body">
+        <form style="margin-top: 12px">
+            <div class="form-group">
+                <select class="form-control" ng-model="mObject.client" ng-options="client.EmailAddress group by client.DisplayName for client in mObject.clients track by client.UserRowId" style="width: 100%">
+                    <option value="">-- Select client name --</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <select class="form-control" ng-model="mObject.task" ng-options="task.Title group by task.CurrentTaskStatusDescription for task in mObject.tasks" style="width: 100%" ng-disabled="mObject.isClientTasksLoading">
+                    <option value="">-- Select task --</option>
+                    <option value="task1">Task 1</option>
+                    <option value="task2">Task 2</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <textarea class="form-control" placeholder="Enter message here..." rows="5" ng-model="mObject.message" style="width: 100%"></textarea>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-info" type="button" ng-click="cancel()">Cancel</button>
+        <button class="btn btn-primary" type="button" ng-click="send()">Send</button>
+    </div>
+</script>
+<script type="text/ng-template" id="snoozeDateModal.html">
+    <style>
+        .modal-content {
+            margin: 0 auto;
+        }
+
+        .modal-body {
+            display: block;
+            top: 0;
+            left: 0;
+        }
+
+            .modal-body .input-group {
+                display: inline-block;
+            }
+
+        .modal-footer {
+            padding: 5px 0;
+        }
+    </style>
+    <div class="modal-header">
+        <h3 class="modal-title">Select a date to snooze through</h3>
+    </div>
+    <div class="modal-body">
+        <div class="input-group">
+            <datepicker ng-model="dt.value" min-date="minDate" show-weeks="false" close-text="Close" ng-required="true"></datepicker>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div style="display:inline-block;" class="input-group">
+            <button type="button" class="btn btn-sm btn-success pull-right ng-binding" ng-click="ok()">Snooze It!</button>
+            <button type="button" class="btn btn-sm btn-danger pull-right ng-binding" ng-click="cancel()">Cancel</button>
+        </div>
+    </div>
+</script>
+<div class="row heartbeat-container" ng-hide="!user">
+    <div class="col-xs-12 col-sm-10">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-7">
+                <h1>Dashboard: <strong ng-bind="user.BusinessName"></strong></h1>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-5 pull-right">
+                <form class="form-horizontal" style="margin-top: 20px">
+                    <div class="form-group">
+                        <label class="col-xs-12 col-sm-4 control-label" style="padding-top: 10px">Auto refresh</label>
+                        <div class="col-xs-12 col-sm-8">
+                            <select ng-model="refreshRate" class="form-control" style="width: 100%">
+                                <option value="10000">Every 10 seconds</option>
+                                <option value="30000">Every 30 seconds</option>
+                                <option value="300000">Every 5 minutes</option>
+                                <option value="null">Never</option>
+                            </select>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>       
+    </div>
+    <div class="col-xs-12 col-sm-2">
+        <button type="button" ng-click="sendMessage()" class="btn btn-lg btn-primary btn-send-message" style="margin: 20px 0 8px 0;">Send message now</button>
+    </div>
+</div>
+
+<div class="container" style="width:100%;max-width:100%">
+    <div class="row" ng-repeat="(row_name, row) in dashboard.rows" row-height style="min-height: 250px;">
+        <div class="panels-wrapper">
+            <div ng-repeat="(name, panel) in row.panels track by panel.id" class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">
+                        <a data-toggle="collapse" data-target="#panel_recent_activity" href="javascript:;"><em class="hidden-xs glyphicon glyphicon-move handle"></em> Recent Activity <span data-ng-show="isLoading" class="pull-right"><i class="glyphicon glyphicon-refresh animated"></i></span></a>
+                    </h3>
+                </div>
+                <div class="panel-collapse collapse in" id="panel_recent_activity">
+                    <div class="panel-body" style="padding-bottom: 0">
+                        body content
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container" style="width:100%;max-width:100%;">
+    <div class="row" id="layout">
+        <div class="col-xs-12 col-sm-6 col-md-4" recent-activity ng-model="dashboard['recent_activity']" user-data="user"></div>
+        <div class="col-xs-12 col-sm-6 col-md-4" estimates-requested ng-model="dashboard['estimates_requested']" user-data="user"></div>
+        <div class="col-xs-12 col-sm-6 col-md-4" recent-messages ng-model="dashboard['recent_messages']" user-data="user"></div>
+        <div class="col-xs-12 col-sm-6 col-md-4" client-reminders ng-model="dashboard['client_reminders']" user-data="user"></div>
+        <div class="col-xs-12 col-sm-6 col-md-4" tech-status-updates ng-model="dashboard['tech_status_updates']" user-data="user"></div>        
+    </div>
+</div>

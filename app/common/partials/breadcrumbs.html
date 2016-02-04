@@ -1,0 +1,11 @@
+﻿<ol class="breadcrumb" ng-show="!isInboxOpen && breadcrumbs.length > 0">
+    <li>
+        <a ng-click="gotoHome()" href="javascript:;">Home</a>
+    </li>
+    <li data-ng-repeat='crumb in breadcrumbs' data-ng-class="{'active': {{ $last }} }">
+        <span data-ng-switch on="$last">
+            <a data-ng-href="{{ crumb.path }}" data-ng-switch-default>{{ crumb.name }}</a>
+            <span data-ng-switch-when="true">{{ crumb.name }}</span>
+        </span>
+    </li>
+</ol>

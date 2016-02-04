@@ -1,0 +1,17 @@
+﻿<div class="row">
+    <div class="col-xs-12">
+        <button type="button" class="widget-toggle collapsed" data-toggle="collapse" data-target="#toggleUserGroups">
+            Toggle MyPinboards
+        </button>
+        <div id="toggleUserGroups" class="widget-collapse collapse" style="height: 1px;">
+            <a href="javascript:;" class="btn btn-primary" id="createGroup" ng-click="openSmartGroupModal()"><i class="glyphicon glyphicon-plus"></i>Create MyPinboard</a>
+            <div class="info" id="noGroupsNotice" ng-hide="smartGroup.length > 0">You have no pinboards</div>
+            <ul id="groups">
+                <li ng-repeat="group in smartGroup track by $index">
+                    <h5 ng-bind="group.Title"></h5>
+                    <p style="font-size:12px" ng-bind="group.DateLastMod | date:'medium'"></p>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

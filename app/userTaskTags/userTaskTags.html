@@ -1,0 +1,15 @@
+﻿<div id="container-wrapper">
+	<!-- begin top container  -->
+	<div class="container-primary">
+		<div class="row">
+			<div class="col-xs-12">
+				<div class="panel-body" ng-controller="UserTaskTagsController">
+					<span class="tags left">
+						<span class="uppercase">tags:</span>&nbsp;
+						<tags-input class="right" ng-model="userTaskTags" display-property="Tag" style="width: 500px;" on-tag-added="userTaskTagPersist(3, $tag)" on-tag-removed="userTaskTagDelete($tag.RowId)"></tags-input>
+					</span>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,11 @@
+﻿<div id="toggleFilters" class="widget-collapse collapse" style="height: 1px;">
+    <ul class="list-group task-filters no-border">
+        <li class="list-group-item {{userTaskQueue.ClassName}}" ng-repeat="userTaskQueue in userTaskQueues">
+            <a ng-click="selectUserTaskQueue(userTaskQueue.Id)">
+                <i class="glyphicon glyphicon-inbox"></i>
+                <span>{{userTaskQueue.Name}}</span>
+                <span class="count right">{{userTaskQueue.Count}}</span>
+            </a>
+        </li>
+    </ul>
+</div>

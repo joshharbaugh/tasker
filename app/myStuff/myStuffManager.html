@@ -1,0 +1,118 @@
+﻿<div id="container-wrapper" style="min-height: 500px;">
+    <div class="row">
+        <div class="col-xs-12">
+            <ol class="breadcrumb" style="margin-top:20px;">
+                <li><a href="/Tasker#/tasks">Home</a></li>
+                <li class="active">My Stuff</li>
+            </ol>
+        </div>
+    </div>
+	<div class="add-toy">
+		<a id="btnAddToy" class="btn btn-primary" href="/Settings/MyBoats?isNewBoat=true#"><i class="glyphicon glyphicon-plus"></i>&nbsp;<strong>Add Boat</strong></a>
+	</div>
+	<div class="my-stuff">
+		<ul>
+			<li ng-repeat="toy in userToys">
+				<a href="/Settings/MyBoats?toyId={{toy.RowId}}">
+					<div class="picture">
+						<p style="background-image: url('../..{{toy.ToyImage}}');"></p>
+					</div>
+				</a>
+				<h3>{{toy.ToyName}}</h3>
+				<button class="btn btn-primary" ng-click="toggleFlyoutMenu($event)">Options</button>
+				<div class="menu" style="width:205px;">
+					<div class="arrow"></div>
+					<ul>
+						<a href="/Settings/MyBoats?toyId={{toy.RowId}}">
+							<li>Settings &amp; Preferences</li>
+						</a>
+                        <a href="/Premium/Owner/LogUsage?toyId={{toy.RowId}}">
+                            <li>Log Usage</li>
+                        </a>
+						<a href="/Premium/Owner/MyBoatProfile/{{toy.RowId}}">
+							<li>Profile / History</li>
+						</a>
+						<a href="#/tasks/{{toy.RowId}}">
+							<li>Create Task</li>
+						</a>
+						<a href="/Premium/Owner/Equipment?toyId={{toy.RowId}}">
+							<li>View Equipment</li>
+						</a>
+						<a href="/Premium/Owner/Insurance?toyId={{toy.RowId}}">
+							<li>Insurance</li>
+						</a>
+						<a href="/Premium/Owner/Warranties?toyId={{toy.RowId}}">
+							<li>Warranties</li>
+						</a>
+						<a href="/Premium/Owner/SpareParts?toyId={{toy.RowId}}">
+							<li>Spare Parts</li>
+						</a>
+						<a href="/Premium/Owner/DocumentsMedia?toyId={{toy.RowId}}">
+							<li>Documents and Media</li>
+						</a>
+                        <a href="/Premium/Owner/ManualsSchematics?toyId={{toy.RowId}}">
+                            <li>Manuals & Schematics</li>
+                        </a>
+					</ul>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>
+<div id="modals">
+	<div class="modal fade" id="permissionsModal" tabindex="-1" role="dialog" aria-labelledby="filtersModal" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="cf modal-header">
+					<h3 class="uppercase">Pro Permissions</h3><i class="close glyphicon glyphicon-remove dark-grey right" data-dismiss="modal"></i>
+				</div>
+				<div class="modal-body">
+					<div class="row list-header">
+						<h3 class="col-xs-7">Permissions</h3>
+						<h3 class="col-xs-5">Which Pros?</h3>
+					</div>
+					<div class="cf listing">
+						<div class="col-xs-7 permission">Allow Pros to access full history</div>
+						<div class="col-xs-5 permission-options">
+							<span class="checkbox unchecked"></span>
+							<span class="option">All</span>
+							<span class="checkbox unchecked"></span>
+							<span class="option">Only these</span>
+						</div>
+					</div>
+					<div class="cf listing">
+						<div class="col-xs-7 permission">All Pros to subscribe to recurring tasks on your</div>
+						<div class="col-xs-5 permission-options">
+							<span class="checkbox unchecked"></span>
+							<span class="option">All</span>
+							<span class="checkbox unchecked"></span>
+							<span class="option">Only these</span>
+						</div>
+					</div>
+					<div class="cf listing">
+						<div class="col-xs-7 permission">Allow pros to add equipment</div>
+						<div class="col-xs-5 permission-options">
+							<span class="checkbox unchecked"></span>
+							<span class="option">All</span>
+							<span class="checkbox unchecked"></span>
+							<span class="option">Only these</span>
+						</div>
+					</div>
+					<div class="cf listing">
+						<div class="col-xs-7 permission">Block pros from creating tasks for me</div>
+						<div class="col-xs-5 permission-options">
+							<span class="checkbox unchecked"></span>
+							<span class="option">All</span>
+							<span class="checkbox unchecked"></span>
+							<span class="option">Only these</span>
+						</div>
+					</div>
+					<div class="row list-header"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary done" data-dismiss="modal">Done</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

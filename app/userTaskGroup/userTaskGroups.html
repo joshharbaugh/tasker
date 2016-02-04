@@ -1,0 +1,31 @@
+﻿<div class="loading pull-left" ng-show="!isLoaded" style="width: 100%;">
+	<div class="progress progress-striped active" style="margin-bottom: 0px; height: 4px; border-radius: 0px;">
+		<div class="progress-bar progress-bar-danger" role="progressbar" style="width: 100%;"></div>
+	</div>
+</div>
+<div ng-show="isLoaded">
+    <form ng-show="context == 'folders'" ng-submit="addTaskFolder(newUserTaskFolder)" id="newUserTaskFolder">
+		<input type="text" placeholder="type here to create your folder" ng-model="newUserTaskFolder.Title" style="font-size: 14px;line-height: 22px;" />
+	</form>
+	<ul class="list-group user-task-list">
+        <li class="list-group-item" ng-show="context=='folders'" ng-repeat="list in myFoldersList track by $index">
+            <span ng-click="setSelectedList(list, context)" ng-drag="true" ng-drag-data="list" ng-class="{'active': $managerScope.taskLists.selectedTasksList.Title && list.IsActive && !$managerScope.activePrimaryInbox}" ng-drop="true" ng-drop-success="onUserTaskDropComplete($data, list)">
+                <i class="glyphicon glyphicon-folder-open"></i>
+                <a style="font-size:12px;width:auto;padding:0" ng-show="list.RowId" href="#" editable-text="list.Title" onbeforesave="$parent.updateTaskList(list)" ng-cancel-drag e-maxlength="64">{{list.Title}}</a>
+                <i class="glyphicon pull-right" ng-show="list.GroupSubGroups.length > 0" ng-class="{'glyphicon-chevron-down': !list.isCollapsed, 'glyphicon-chevron-right': list.isCollapsed}" ng-click="list.isCollapsed = !list.isCollapsed" style="margin-right: 14px; cursor: pointer; font-size: 14px;"></i>
+                <!--<button ng-show="list.TaskCount == 0" ng-click="deleteUserTaskGroup(list)" class="pull-right" ng-cancel-drag><i class="glyphicon glyphicon-trash"></i></button>-->
+            </span>
+            <button ng-show="list.TaskCount == 0" ng-click="deleteUserTaskGroup(list)" class="pull-right btn-delete" ng-class="{'active': $managerScope.taskLists.selectedTasksList.Title && list.IsActive && !$managerScope.activePrimaryInbox}"><i class="glyphicon glyphicon-trash"></i></button>
+			<ul ng-show="list.GroupSubGroups.length > 0 && !list.isCollapsed" style="padding-left: 15px;">
+				<li class="list-group-item list-group-child-item" ng-repeat="child in list.GroupSubGroups track by $index">
+					<span ng-click="setSelectedList(child)" ng-drag="true" ng-drag-data="child" ng-class="{'active': child.IsActive}" ng-drop="true" ng-drop-success="onUserTaskChildDropComplete($data, child)">
+						<i class="glyphicon glyphicon-list"></i>
+						<a style="font-size:12px;width:auto;padding:0" ng-show="child.RowId" href="#" editable-text="child.Title" onbeforesave="$parent.updateTaskList(child)" ng-cancel-drag e-maxlength="64">{{child.Title}}</a>
+						<!--<button ng-show="child.TaskCount == 0" ng-click="deleteUserTaskGroup(child)" class="pull-right" ng-cancel-drag><i class="glyphicon glyphicon-trash"></i></button>-->
+					</span>
+                    <button ng-show="child.TaskCount == 0" ng-click="deleteUserTaskGroup(child)" class="pull-right btn-delete" ng-class="{'active': child.IsActive}"><i class="glyphicon glyphicon-trash"></i></button>
+				</li>
+			</ul>
+        </li>
+	</ul>
+</div>

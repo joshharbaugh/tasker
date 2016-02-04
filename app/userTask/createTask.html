@@ -1,0 +1,100 @@
+﻿<div class="task-panel" style="margin: 0; padding: 0;" ng-class="{'isCreateOnBehalf': isCreateOnBehalf}">
+	<form ng-submit="createUserTask()" id="tourStopCreateNewTask" class="newUserTask">
+		<input type="text" placeholder="type here to create your task" ng-model="newUserTask.Title" maxlength="255" ng-class="{'newUserTaskShort': newUserTask.Title && !isCreateOnBehalf}">
+		<button type="submit" class="ng-hide btn btn-primary taskitButton" style="padding-bottom: 14px" ng-show="newUserTask.Title && !isCreateOnBehalf">TaskIt!</button>
+		<button type="button" class="ng-hide btn btn-primary createOnBehalfButton" ng-show="newUserTask.Title && !isCreateOnBehalf && $parent.isPermission('CreateTask') && !isBusinessServiceTech" ng-click="isCreateOnBehalf = true">
+			<span class="caret"></span>
+		</button>
+	</form>
+	<div class="task-content createOnBehalf ng-hide" style="padding:0 0 0 5px" ng-show="isCreateOnBehalf">
+		<div class="meta" style="padding-top: 0px;">
+			<div>
+				<h4>On Behalf Of:</h4>
+				<div style="height: 30px;">
+					<a href="#" editable-text="selectedClient" e-typeahead="x as x.TypeaheadDisplay for x in suggestAuthorizedClient($viewValue)" e-style="width: 350px!important" e-required e-placeholder="Enter Client name or email" onbeforesave="assignClient($data)">{{ selectedClient.TypeaheadDisplay || "Select Client" }}</a>
+				</div>
+			</div>
+		</div>
+		<div class="meta">
+			<div ng-show="newUserTask.UserRowId" style="border-top: 1px solid #eee;">
+				<div ng-show="isWorkOrderEnabled()" class="col-sm-12 create-work-order">
+					<div class="col-sm-6" style="margin-left: -15px; padding-left: 0px;">
+						<h4>Make this a Work Order: <label>(optional)</label></h4>
+						<div class="request-estimate">
+							<label>
+								<input type="checkbox" ng-model="newUserTask.IsWorkOrder" ng-click="getWorkOrderLookups();" />
+								&nbsp;Work Order
+							</label>
+						</div>
+					</div>
+					<div class="col-sm-6" style="padding-top: 0px;">
+						<div>
+							<h4>Link Work Order from Dock Master:</h4>
+							<div style="height: 30px;display: inline-block;">
+								<select ng-disabled="!newUserTask.IsWorkOrder" class="form-control input-sm" style="width: 292px;" ng-change="toggleWorkOrderDropdowns('workorder')" ng-model="newUserTask.selectedWorkOrderToLink" ng-options="workOrder as workOrder.Customer + ' ' + workOrder.Id + ' ' + workOrder.OpenDate for workOrder in newUserTask.ClientWorkOrders"></select>
+							</div>
+						</div>
+						<div style="font-weight: bold; padding-left: 10px;"><h4>- Or -</h4></div>
+						<div>
+							<h4>Op Codes</h4>
+							<select ng-disabled="!newUserTask.IsWorkOrder"
+									data-drop-auto="false"
+									class="selectpicker"
+									data-show-subtext="true"
+									data-live-search="true"
+									selectpicker
+									multiple
+									data-selected-text-format="count>3"
+									ng-change="toggleWorkOrderDropdowns('opcode')"
+									ng-model="newUserTask.FirstOpCode"
+									ng-options="OpCode as OpCode.Desc for OpCode in newUserTask.ClientOpCodes">
+								<option value="">Select Op Codes</option>
+							</select>
+						</div>
+					</div>
+				</div>
+				<h4>Request Approval: <label>(optional)</label></h4>
+				<div class="request-estimate">
+					<label>
+						<input type="checkbox" ng-model="newUserTask.IsRequestApproval" />
+						&nbsp;Request Approval
+					</label>
+				</div>
+				<h4>Provide Estimate: <label>(optional)</label></h4>
+				<div class="request-estimate">
+					<label>
+						<input type="checkbox" ng-model="newUserTask.IsRequestEstimateChecked" />
+						&nbsp;Provide Estimate
+					</label>
+				</div>
+				<div class="request-estimate" ng-show="newUserTask.IsRequestEstimateChecked">
+					<h4>Estimate Amount:</h4>
+					<input type="text" ng-model="newUserTask.EstimateAmount" class="estimate-currency form-control" ng-currency />
+				</div>
+				<h4>Estimated Completion Date: <label>(optional)</label></h4>
+				<div class="form-group form-group-sm requested-completion-datepicker">
+					<div class="input-group">
+						<input type="text" placeholder="Enter Completion Date (optional)" datepicker-popup="MM/dd/yyyy" ng-model="newUserTask.RequestedCompletionDate" is-open="opened.requestedCompletionDate" min-date="today" datepicker-options="dpOptions()" />
+						<span class="input-group-btn">
+							<button type="button" class="btn btn-default" ng-click="openDatepicker($event, 'requestedCompletionDate')" style="margin-right: 0px;"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="row meta">
+			<div class="col-lg-4" ng-show="newUserTask.UserRowId">
+				<tk-equipment-selector user-toys="clientToys" selected-toy-row-id="newUserTask.ToyRowId" selected-toy-name="userTask.ToyName" active-equipment-ids-list="newUserTask.ActiveToyEquipmentIdsList" is-save="false" is-edit="true" is-client="true" is-sample-task="false"></tk-equipment-selector>
+			</div>
+		</div>
+		<div class="meta" style="margin-bottom: 15px;">
+			<div>
+				<button class="btn btn-warning btn-block" ng-click="cancelCreateOnBehalf()"><i class="glyphicon glyphicon-remove"></i>&nbsp;Cancel</button>
+				<button class="btn btn-success btn-block" ng-click="prePostClientTask()" ng-disabled="isCreateTaskButtonDisabled()">
+					<span ng-if="newUserTask.IsWorkOrder"><i class="glyphicon glyphicon-ok"></i>&nbsp;Create Work Order Estimate</span>
+					<span ng-if="!newUserTask.IsWorkOrder"><i class="glyphicon glyphicon-ok"></i>&nbsp;Create Task</span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>

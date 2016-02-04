@@ -1,0 +1,803 @@
+﻿<script type="text/ng-template" id="convertToTaskListModal.html">
+	<div class="modal-header" style="padding:15px;line-height:1.4;min-height:60px;margin-left:-10px;margin-right:-10px;margin-bottom:14px;">
+		<h1 class="modal-title" style="font-size:2em;">Heads up!</h1>
+	</div>
+	<div class="modal-body" style="font-size: 1.3em;">
+		<p>Looks like you are creating a list what would you like the list title to be:</p>
+		<input type="text" ng-model="userTask.Title" class="form-control input-lg" style="width: 100%; margin-bottom: 20px;" />
+		<hr />
+		<form ng-submit="appendTaskToNewTaskList(newUserTaskTitle)">
+			<input type="text" ng-model="newUserTaskTitle" class="form-control input-lg" style="width: 100%; margin-bottom: 20px;" maxlength="255" placeholder="type here to add another task to this task list" />
+		</form>
+		<ul ng-show="userTask.NewTasks && userTask.NewTasks.length > 0" class="list-group">
+			<li ng-repeat="newTaskTitle in userTask.NewTasks track by $index" class="list-group-item">
+				{{newTaskTitle}}
+				<a ng-click="userTask.NewTasks.splice($index, 1)" class="pull-right" style="font-weight: 900; text-decoration: none; cursor: pointer;">&times;</a>
+			</li>
+		</ul>
+	</div>
+	<div class="modal-footer" style="margin-left:-10px;margin-right:-10px;">
+		<button class="btn btn-primary pull-left" ng-click="continue()">Save Task List <span ng-if="userTask.NewTasks.length > 0">and New Task<span ng-if="userTask.NewTasks.length > 1">s</span></span></button>
+		<button class="btn btn-warning" ng-click="cancel()">Cancel</button>
+	</div>
+</script>
+<div class="task-panel collapsed" id="task-{{userTask.RowId}}">
+	<div class="row task-header" ng-class="setStyle(userTaskGroup)" ng-drag="true" ng-drag-data="{'userTask': {{userTask}}, 'userTaskGroup': {{userTaskGroup.RowId || false}}}">
+		<div class="col-sm-12">
+			<i class="glyphicon glyphicon-pushpin pull-left" style="color: #fff; margin-right: 6px"></i>
+			<i ng-if="isMobile" class="glyphicon glyphicon-move pull-left" style="color: #fff;position:absolute;top:30px;left:8px;width:auto;padding:4px 6px;font-size:19px;" ng-drag-handle></i>
+			<div class="pull-left" ng-cancel-drag>
+				<input style="height: 18px; width: 18px; margin-top: 3px; margin-right: 3px;" ng-cancel-drag type="checkbox" name="selectTask" ng-checked="userTask.Selected" ng-click="toggleSelected(userTask, userTaskGroup)" ng-show="isVisible.isCheckAllTasksVisible" />
+			</div>
+			<div class="editable-container pull-left">
+				<div>
+					<a href="#" editable-text="userTask.Title" onbeforesave="updateUserTaskTitle($data)" ng-cancel-drag ng-if="!isVisible.taskClosed && !isSubcontractorTask && !isSampleTask" e-maxlength="255">
+						{{ userTask.Title | limitTo:50 }}<span ng-if="userTask.Title.length > 50">...</span>
+					</a>
+					<span ng-if="isVisible.taskClosed || isSubcontractorTask || isSampleTask">{{ userTask.Title }}</span>
+					<span ng-if="isClientTask || isServiceTechTask || isSubcontractorTask" style="margin-top: 14px; margin-bottom: 10px; line-height: 1; display: block">
+						<small ng-hide="isSubcontractorTask">Client name: {{userTask.TaskUserName}}</small><br />
+						<small ng-show="userTask.ToyName">Boat name: {{userTask.ToyName}}</small>
+					</span>
+				</div>
+				<div class="list-ratings" ng-cancel-drag>
+					<a href="javascript:;" ng-cancel-drag ng-click="clearTaskRating()"><span class="glyphicon glyphicon-remove" style="color:#9a0100;"></span></a>
+					<rating ng-cancel-drag ng-model="rate" max="max" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+				</div>
+			</div>
+			<div class="status-label pull-left">
+				<span>{{ userTask.CurrentTaskStatusDescription }}</span><br>
+				<span style="line-height: 1; margin-bottom: 14px; display: block">
+					<small style="font-size:10px">{{userTask.ServiceTechStatusDescription}}</small>
+				</span>
+				<span ng-if="isUserTask && userTask.AssignedUserRowId != null" style="margin-bottom: 10px; line-height: 1; display: block">
+					<small>Assigned to: {{userTask.AssignedUserDisplayName.split('|')[0]}}</small>
+				</span>
+				<span ng-if="isSubcontractorTask && userTask.AssignedUserRowId != null" style="margin-bottom: 10px; line-height: 1; display: block">
+					<small>Assigned by: {{userTask.AssignedUserDisplayName.split('|')[0]}}</small>
+				</span>
+				<span ng-if="isClientTask || isSubcontractorTask" style="margin-bottom: 10px; line-height: 1; display: block">
+					<small>Tech assigned: {{userTask.ServiceTechDisplayName.split('|')[0]}}</small>
+				</span>
+				<span ng-if="isClientTask && userTask.SubcontractorDisplayName.split('|')[0] != 'None'" style="margin-bottom: 10px; line-height: 1; display: block">
+					<small>Subcontracted to: {{userTask.SubcontractorDisplayName.split('|')[0]}}</small>
+				</span>
+				<span ng-show="isVisible.isInProgressReason" style="margin-bottom: 10px; line-height: 1; display: block">
+					<small>Reason on Hold: {{userTask.ReasonDescription}}</small>
+				</span>
+			</div>
+			<div class="pull-right hidden-sm hidden-md hidden-lg">
+				<a data-toggle="dropdown" style="font-size:2em;padding:14px 8px 10px 8px;text-align:center">
+					<i class="glyphicon glyphicon-option-vertical" style="font-size: inherit; width: auto;"></i>
+				</a>
+				<ul class="dropdown-menu ng-hide" style="margin-top:2em">
+					<li>
+						<a ng-cancel-drag href="javascript:;" ng-click="toggleTaskDetails()">
+							<span ng-if="isCollapsed">Expand</span>
+							<span ng-if="!isCollapsed">Collapse</span>
+							Task Details
+						</a>
+					</li>
+					<li ng-hide="isListOrTaskById || isSubcontractorTask"><a ng-cancel-drag href="javascript:;" ng-click="updateUserTaskStatus('Completed')">Mark complete</a></li>
+					<li ng-hide="!isSubcontractorTask"><a ng-cancel-drag href="javascript:;" ng-click="updateUserTaskStatus('SubcontractorCompleted')">Mark complete</a></li>
+					<li ng-hide="$parent.otherSupervisors.isOtherSupervisorsQueue || isListOrTaskById"><a ng-cancel-drag href="javascript:;" ng-click="convertTaskToTaskList(userTask)">Convert to Task List</a></li>
+					<li ng-hide="$parent.otherSupervisors.isOtherSupervisorsQueue || isListOrTaskById || isSubcontractorTask"><a ng-cancel-drag href="javascript:;" ng-click="toggleReminder(userTask)">Set Reminder</a></li>
+					<li><a ng-cancel-drag href="javascript:;" ng-click="toggleQuickNotes(userTask)">Quick Notes</a></li>
+					<li ng-hide="isSubcontractorTask">
+						<a ng-click="getUserTaskMessages()" style="position:relative;">
+							Messages&nbsp;&nbsp;
+							<span class="badge badge-header" ng-class="{'badge-warning': userTask.MessagesCount > 0}" style="right: auto">
+								{{userTask.MessagesCount > 0 ? userTask.MessagesCount : '0'}}
+							</span>
+						</a>
+					</li>
+					<li class="divider"></li>
+					<li ng-show="isVisible.notAssigned && !isListOrTaskById || !isSubcontractorTask"><a href="javascript:;" ng-click="deleteUserTask()" style="color:#a94442">Delete Task</a></li>
+				</ul>
+			</div>
+			<div class="task-icons pull-right hidden-xs">
+				<i ng-cancel-drag class="glyphicon pull-right" ng-click="toggleTaskDetails()" ng-class="{'glyphicon-chevron-down': isCollapsed, 'glyphicon-chevron-up': !isCollapsed}" tooltip-placement="top" tooltip="Toggle"></i>
+				<i ng-cancel-drag class="glyphicon glyphicon-ok-circle pull-right" ng-click="completeUserTask()" tooltip-placement="top" tooltip="Mark complete" ng-hide="isListOrTaskById" ng-class="{disabled: isSampleTask}"></i>
+				<i ng-cancel-drag class="glyphicon glyphicon-plus pull-right" ng-click="convertTaskToTaskList(userTask)" tooltip-placement="top" tooltip="Convert to list" ng-hide="isHideTaskAddTask(userTask)" ng-class="{disabled: isSampleTask}"></i>
+				<i ng-cancel-drag class="glyphicon glyphicon-time pull-right" ng-click="toggleReminder(userTask)" tooltip-placement="top" tooltip="Set reminder" ng-hide="$parent.otherSupervisors.isOtherSupervisorsQueue || isListOrTaskById || isSubcontractorTask" ng-class="{disabled: isSampleTask}"></i>
+				<i ng-cancel-drag class="glyphicon glyphicon-transfer pull-right" tooltip="{{convertMessage}}" ng-show="isWOEnabled" tooltip-placement="top" ng-click="convertTaskToWorkOrder(userTask)" ng-class="{disabled: isSampleTask}"></i>
+				<i ng-cancel-drag class="glyphicon glyphicon-pencil pull-right" ng-click="toggleQuickNotes(userTask)" tooltip-placement="top" tooltip="Quick notes" ng-class="{disabled: isSampleTask}"></i>
+				<div ng-cancel-drag class="dropdown pull-right" tooltip-placement="top" tooltip="Messages" ng-hide="isSubcontractorTask">
+					<a class="dropdown-toggle" ng-click="getUserTaskMessages()" ng-class="{disabled: isSampleTask}">
+						<i class="glyphicon glyphicon-envelope"></i>
+						<span class="badge badge-header" ng-class="{'badge-warning': userTask.MessagesCount > 0}">{{userTask.MessagesCount > 0 ? userTask.MessagesCount : ''}}</span>
+					</a>
+				</div>
+				<i ng-cancel-drag class="glyphicon glyphicon-trash pull-right" ng-click="deleteUserTask()" tooltip-placement="top" tooltip="Delete" ng-show="isVisible.notAssigned && !isListOrTaskById || !isSubcontractorTask"></i>
+			</div>
+		</div>
+	</div>
+	<div ng-if="userTask.isQuickNotesOpen" class="dropdown-menu notes-popup">
+		<i class="glyphicon glyphicon-remove-circle" ng-click="userTask.isQuickNotesOpen = !userTask.isQuickNotesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
+		<div class="col-xs-12">
+			<h3 style="margin: 0">Quick Add Notes</h3>
+		</div>
+		<div class="col-xs-12">
+			<div class="row">
+				<div ng-class="{'col-xs-6': isClientTask, 'col-xs-12': isUserTask}" data-ng-if="isUserTask || isClientTask">
+					<textarea class="form-control input-sm" style="margin-top: 2px; width: 100%" ng-model="userNote" placeholder="Add a customer note here..."></textarea>
+					<button class="btn btn-success btn-block" style="margin-bottom: 10px" ng-click="saveNotes(userNote, false); userNote = ''">Save Customer Note</button>
+				</div>
+				<div class="col-xs-6" ng-if="isSubcontractorTask">
+					<textarea class="form-control input-sm" style="margin-top: 2px; width: 100%" ng-model="userTask.note" placeholder="Add a note to {{userTask.AssignedUserDisplayName.split('|')[0]}} here..."></textarea>
+					<button class="btn btn-success btn-block" style="margin-bottom: 10px" ng-click="saveSubcontractorNote(userTask);">Save Note to {{userTask.AssignedUserDisplayName.split('|')[0]}}</button>
+				</div>
+				<div ng-class="{'col-xs-6': isClientTask || isSubcontractorTask, 'col-xs-12': isServiceTechTask}" ng-if="isClientTask || isServiceTechTask || isSubcontractorTask">
+					<textarea class="form-control input-sm" style="margin-top: 2px; width: 100%" ng-model="userTechnicianNote" placeholder="Add a technician note here..."></textarea>
+					<button class="btn btn-success btn-block" style="margin-bottom: 10px" ng-click="saveNotes(userTechnicianNote, true); userTechnicianNote = ''">Save Technician Note</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-cancel-drag ng-show="userTask.isMessagesOpen" class="dropdown-menu messages-popup">
+		<i class="glyphicon glyphicon-remove-circle" ng-click="userTask.isMessagesOpen = !userTask.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
+		<tk-user-task-messages parent-row-id="userTask.RowId" parent-type="1"></tk-user-task-messages>
+	</div>
+	<div ng-if="userTask.isReminderOpen" class="dropdown-menu reminder-popup">
+		<i class="glyphicon glyphicon-remove-circle" ng-click="userTask.isReminderOpen = !userTask.isReminderOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999; color: #333"></i>
+		<form class="form-inline reminder-form" name="userTask.reminderFromTaskForm" novalidate>
+			<div class="form-group col-sm-12" show-errors>
+				<label ng-cancel-drag>Reminder</label>
+				<input ng-cancel-drag class="form-control input-sm" type="text" ng-model="userTask.alarm.Title" ng-required="true" placeholder="Your reminder title" name="remindertitle" />
+				<p class="help-block" ng-if="userTask.reminderFromTaskForm.remindertitle.$error.required">A title is required to create a reminder</p>
+			</div>
+			<div class="form-group col-sm-12">
+				<textarea ng-cancel-drag class="form-control input-sm" ng-model="userTask.alarm.Description" placeholder="Add a brief overview of your reminder"></textarea>
+			</div>
+			<br /><br /><br />
+			<div class="form-group col-sm-12" ng-init="userTask.alarm.Type='OneTime'">
+				<input type="radio" ng-model="userTask.alarm.Type" value="OneTime"><label>One Time Reminder</label>
+				<input type="radio" ng-model="userTask.alarm.Type" value="Recurring"><label>Recurring Reminder</label>
+			</div>
+			<div class="form-group col-sm-12`" show-errors ng-show="userTask.alarm.Type == 'OneTime'">
+				<label class="col-xs-4">Due Date:</label>
+				<div class="col-xs-8">
+					<i class="pull-right glyphicon glyphicon-remove-sign filter-reset" ng-click="userTask.alarm.DueDate = null"></i>
+					<div class="input-group" style="display:table;">
+						<input type="text" class="form-control" datepicker-popup="MM/dd/yyyy" ng-model="userTask.alarm.DueDate" name="dueDate" is-open="opened.dueDateOpened" ng-required="userTask.alarm.Type == 'OneTime'" datepicker-options="dpOptions()" />
+						<span class="input-group-btn filter-datepicker-button">
+							<button type="button" class="btn btn-default" ng-click="openDatepicker($event, 'dueDateOpened')"><i class="glyphicon glyphicon-calendar"></i></button>
+						</span>
+					</div>
+				</div>
+				<div class="clear-fix"></div>
+				<p class="help-block" ng-if="userTask.reminderFromTaskForm.dueDate.$error.required">A due date is required to create a reminder</p>
+			</div>
+		</form>
+		<div ng-show="userTask.alarm.Type == 'Recurring'">
+			<form class="form-inline reminder-form" name="userTask.reminderFrequenciesForm" novalidate>
+				<div class="form-group col-sm-12">
+					<label ng-cancel-drag>Reminder Frequency</label>
+				</div>
+				<div ng-cancel-drag ng-repeat="freq in userTask.alarm.Frequencies track by $index">
+					<ng-form name="freqForm" ng-cancel-drag>
+						<div class="row">
+							<div ng-cancel-drag class="col-sm-3">
+								<select class="form-control input-sm" ng-model="freq.ConditionTypeId" ng-show="$index > 0" ng-cancel-drag>
+									<option value="1">And</option>
+									<option value="2">Or</option>
+								</select>
+							</div>
+							<div ng-cancel-drag class="col-sm-3">
+								<select class="form-control input-sm" ng-model="freq.RecurrenceTypeId" ng-cancel-drag>
+									<option value="1">Every</option>
+									<option value="2">First</option>
+									<option value="3">When required</option>
+								</select>
+							</div>
+							<div ng-cancel-drag class="col-sm-2 form-group" show-errors>
+								<input name="specfreqnumber" class="form-control input-sm" type="number" step="any" placeholder="#" ng-model="freq.FrequencyNumber" min="1"
+									   ng-cancel-drag ng-show="freq.RecurrenceTypeId == 1 || freq.RecurrenceTypeId == 2" ng-required="true" />
+							</div>
+							<div ng-cancel-drag class="col-sm-4">
+								<select class="form-control input-sm" ng-model="freq.FrequencyTypeId" ng-cancel-drag ng-show="freq.RecurrenceTypeId == 1 || freq.RecurrenceTypeId == 2">
+									<option value="2">Days since last action</option>
+									<option value="3">Weeks since last action</option>
+									<option value="4">Months since last action</option>
+									<option value="5">Years since last action</option>
+									<option value="8">Day(s)</option>
+									<option value="11">Month(s)</option>
+									<option value="9">Year(s)</option>
+									<option value="10" ng-show="userTask.ToyRowId > 0 && userTask.IsToyEquipment > 0">Gallon used</option>
+									<option value="6" ng-show="userTask.ToyRowId > 0 && userTask.IsToyEquipment > 0">Gallons used since last action</option>
+									<option value="1" ng-show="userTask.ToyRowId > 0 && userTask.IsToyEquipment > 0">Hours used</option>
+									<option value="12" ng-show="userTask.ToyRowId > 0 && userTask.IsToyEquipment > 0">Hours used since last action</option>
+								</select>
+							</div>
+						</div>
+						<div class="row">
+						</div>
+					</ng-form>
+				</div>
+				<p class="form-group help-block" style="color: #a94442;" ng-if="userTask.reminderFrequenciesForm.$error.required">A frequency amount is required to create a reminder</p>
+				<p class="form-group help-block" style="color: #a94442;" ng-if="userTask.reminderFrequenciesForm.$error.freqmin">At least one frequency is required to create a reminder</p>
+			</form>
+			<form class="form-inline reminder-form" novalidate>
+				<div class="row" ng-cancel-drag>
+					<div class="form-group col-sm-3" ng-cancel-drag>
+						<select class="form-control input-sm" ng-model="Frequency.ConditionTypeId" ng-show="userTask.alarm.Frequencies.length > 0" ng-cancel-drag>
+							<option value="1">And</option>
+							<option value="2">Or</option>
+						</select>
+					</div>
+					<div class="form-group col-sm-3" ng-cancel-drag>
+						<select class="form-control input-sm" ng-model="Frequency.RecurrenceTypeId" ng-cancel-drag>
+							<option value="1" selected>Every</option>
+							<option value="2">First</option>
+							<option value="3">When required</option>
+						</select>
+					</div>
+					<div class="form-group col-sm-2" ng-cancel-drag>
+						<input class="form-control input-sm" type="number" step="any" placeholder="#" ng-model="Frequency.FrequencyNumber" min="1"
+							   ng-cancel-drag ng-show="Frequency.RecurrenceTypeId == 1 || Frequency.RecurrenceTypeId == 2" />
+					</div>
+					<div class="form-group col-sm-4" ng-cancel-drag>
+						<select class="form-control input-sm" ng-model="Frequency.FrequencyTypeId" ng-cancel-drag ng-show="Frequency.RecurrenceTypeId == 1 || Frequency.RecurrenceTypeId == 2">
+							<option value="2">Days since last action</option>
+							<option value="3">Weeks since last action</option>
+							<option value="4">Months since last action</option>
+							<option value="5">Years since last action</option>
+							<option value="8">Day(s)</option>
+							<option value="11">Month(s)</option>
+							<option value="9">Year(s)</option>
+							<option value="10" ng-show="userTask.ToyRowId > 0 && userTask.IsToyEquipment > 0">Gallon used</option>
+							<option value="6" ng-show="userTask.ToyRowId > 0 && userTask.IsToyEquipment > 0">Gallons used since last action</option>
+							<option value="1" ng-show="userTask.ToyRowId > 0 && userTask.IsToyEquipment > 0">Hours used</option>
+							<option value="12" ng-show="userTask.ToyRowId > 0 && userTask.IsToyEquipment > 0">Hours used since last action</option>
+						</select>
+					</div>
+				</div>
+				<div class="row">
+					<div class="form-group col-sm-12">
+						<button type="button" class="btn btn-xs" ng-click="addFrequencyToReminder(Frequency)" ng-cancel-drag>Add Frequency</button>
+					</div>
+				</div>
+			</form>
+		</div>
+		<form class="form-inline reminder-form" novalidate>
+			<div class="form-group col-sm-12">
+				<label ng-cancel-drag><input type="checkbox" ng-model="userTask.alarm.hasSteps" /> Does your reminder involve multiple steps?</label>
+				<div ng-show="userTask.alarm.hasSteps">
+					<ol class="list-group" ng-show="userTask.alarm.Templates.length > 0" ng-cancel-drag>
+						<li class="list-group-item" ng-repeat="step in userTask.alarm.Templates track by $index" ng-cancel-drag>
+							{{$index+1}} {{step}}
+						</li>
+					</ol>
+					<div class="form-group" ng-cancel-drag>
+						<input class="form-control input-sm" ng-model="Step.Details" placeholder="Add your step details" ng-cancel-drag />
+					</div>
+					<button type="button" class="btn btn-xs" ng-click="addStepToReminder(Step)" ng-cancel-drag>Add</button>
+				</div>
+			</div>
+			<div class="clearfix"></div>
+			<button type="button" class="btn btn-success btn-xs pull-left" style="margin-top: 4px;" ng-click="setReminder(userTask.alarm)" ng-cancel-drag>Save reminder</button>
+		</form>
+	</div>
+
+	<div ng-cancel-drag collapse="isWOCollapsed">
+		<div class="form-group col-sm-12">
+			<div class="row" style="margin-bottom:15px; margin-top: 10px">
+				<div class="col-sm-3">
+					<h4>Op Codes :</h4>
+					<select data-drop-auto="false"
+							class="selectpicker"
+							multiple
+							data-selected-text-format="count>3"
+							ng-model="userTask.FirstOpCode"
+							ng-options="OpCode as OpCode.Desc for OpCode in userTask.ClientOpCodes"
+							ng-change="toggleWorkOrderDropdowns('opcode')"></select>
+				</div>
+				<div class="col-sm-9" style="margin-bottom: 20px;">
+
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-3">
+					<button class="btn btn-success btn-block" ng-click="createServiceRequest()">
+						<span ng-if="userTask.IsWorkOrder"><i class="glyphicon glyphicon-ok"></i>&nbsp;{{convertMessage}}</span>
+					</button>
+				</div>
+				<div class="row">
+					<div class="col-sm-3">
+						<button class="btn btn-warning btn-block" ng-click="cancelConvertToWorkOrder()"><i class="glyphicon glyphicon-remove"></i>&nbsp;Cancel</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div ng-cancel-drag collapse="isCollapsed" ng-if="isRender">
+		<div class="task-content row">
+			<div class="col-xs-12 col-sm-8">
+				<tk-linked-media user-task-row-id="userTask.RowId"></tk-linked-media>
+			</div>
+			<div class="col-xs-12 col-sm-4 pull-right" style="background-color: #f9f9f9;">
+				<div class="meta status">
+					<accordion close-others="true" class="notesAccordion">
+						<accordion-group is-open="true" ng-show="isVisible.taskActions">
+							<accordion-heading>Task Actions</accordion-heading>
+							<div ng-if="isUserTask || isClientTask">
+								<div class="meta status" ng-if="isVisible.notAssigned">
+									<tk-equipment-selector user-toys="userToys" selected-toy-row-id="userTask.ToyRowId" selected-toy-name="userTask.ToyName" active-equipment-ids-list="userTask.ActiveToyEquipmentIdsList" is-save="true" is-edit="true" is-client="false" is-sample-task="false"></tk-equipment-selector>
+								</div>
+								<div class="meta status" ng-show="isVisible.notAssigned">
+									<span style="font-size:10px;color:#ccc;line-height:1.4;display:block;margin-top:8px;">The task is assigned to you, unless you assign it to another user.</span>
+									<h4 style="margin-top: 0px;">Assigned To:</h4>
+									<a href="#" editable-text="assignedUser" e-typeahead="x as x.TypeaheadDisplay for x in suggestContact($viewValue)" e-required e-placeholder="User, Business, Email" onbeforesave="checkUser($data)" oncancel="$data = false" e-style="width:100%!important;">{{ typeaheadDisplayUser($data) || "Select User" }}</a>
+								</div>
+								<div class="meta status" ng-if="taskPost.IsNewContact && taskPost.AssignedUserRowId != null" style="margin-top: 20px; color: #666 !important;">
+									<h4 style="margin-top: 0px;">New Contact:</h4>
+									{{taskPost.TypeaheadDisplay}}
+								</div>
+								<div class="meta status" ng-if="taskPost.IsNewContact && taskPost.AssignedUserRowId == null" style="margin-top: 20px;">
+									<h4 style="margin-top: 0px;">New Contact:</h4>
+									First Name<br />
+									<input type="text" class="form-control new-contact" ng-model="taskPost.FirstName" />
+									Last Name<br />
+									<input type="text" class="form-control new-contact" ng-model="taskPost.LastName" />
+									<div class="request-estimate" ng-show="taskPost.AssignedUserRowId == null">
+										<label>
+											<input type="checkbox" name="isServiceProvider" ng-model="taskPost.IsBusiness" ng-click="taskPost.IsBusiness != taskPost.IsBusiness" />&nbsp;Service Provider
+										</label>
+									</div>
+									<div ng-show="taskPost.IsBusiness">
+										Business Name<br />
+										<input type="text" class="form-control new-contact" ng-model="taskPost.BusinessName" />
+										Country<br />
+										<select ng-model="taskPost.Country" class="form-control new-contact">
+											<option value="United States">United States</option>
+											<option value="Canada">Canada</option>
+										</select>
+										State<br />
+										<select ng-model="taskPost.State" class="form-control new-contact" ng-if="taskPost.Country == 'Canada'">
+											<option value="AB">Alberta</option>
+											<option value="BC">British Columbia</option>
+											<option value="MB">Manitoba</option>
+											<option value="NB">New Brunswick</option>
+											<option value="NL">Newfoundland and Labrador</option>
+											<option value="NS">Nova Scotia</option>
+											<option value="NT">Northwest Territories</option>
+											<option value="NU">Nunavut</option>
+											<option value="ON">Ontario</option>
+											<option value="PE">Prince Edward Island</option>
+											<option value="QC">Quebec</option>
+											<option value="SK">Saskatchewan</option>
+											<option value="YT">Yukon</option>
+										</select>
+										<select ng-model="taskPost.State" class="form-control new-contact" ng-if="taskPost.Country == 'United States'">
+											<option value="AL">Alabama</option>
+											<option value="AK">Alaska</option>
+											<option value="AZ">Arizona</option>
+											<option value="AR">Arkansas</option>
+											<option value="CA">California</option>
+											<option value="CO">Colorado</option>
+											<option value="CT">Connecticut</option>
+											<option value="DE">Delaware</option>
+											<option value="DC">District Of Columbia</option>
+											<option value="FL">Florida</option>
+											<option value="GA">Georgia</option>
+											<option value="HI">Hawaii</option>
+											<option value="ID">Idaho</option>
+											<option value="IL">Illinois</option>
+											<option value="IN">Indiana</option>
+											<option value="IA">Iowa</option>
+											<option value="KS">Kansas</option>
+											<option value="KY">Kentucky</option>
+											<option value="LA">Louisiana</option>
+											<option value="ME">Maine</option>
+											<option value="MD">Maryland</option>
+											<option value="MA">Massachusetts</option>
+											<option value="MI">Michigan</option>
+											<option value="MN">Minnesota</option>
+											<option value="MS">Mississippi</option>
+											<option value="MO">Missouri</option>
+											<option value="MT">Montana</option>
+											<option value="NE">Nebraska</option>
+											<option value="NV">Nevada</option>
+											<option value="NH">New Hampshire</option>
+											<option value="NJ">New Jersey</option>
+											<option value="NM">New Mexico</option>
+											<option value="NY">New York</option>
+											<option value="NC">North Carolina</option>
+											<option value="ND">North Dakota</option>
+											<option value="OH">Ohio</option>
+											<option value="OK">Oklahoma</option>
+											<option value="OR">Oregon</option>
+											<option value="PA">Pennsylvania</option>
+											<option value="RI">Rhode Island</option>
+											<option value="SC">South Carolina</option>
+											<option value="SD">South Dakota</option>
+											<option value="TN">Tennessee</option>
+											<option value="TX">Texas</option>
+											<option value="UT">Utah</option>
+											<option value="VT">Vermont</option>
+											<option value="VA">Virginia</option>
+											<option value="WA">Washington</option>
+											<option value="WV">West Virginia</option>
+											<option value="WI">Wisconsin</option>
+											<option value="WY">Wyoming</option>
+										</select>
+									</div>
+								</div>
+								<div class="meta status" ng-show="isVisible.notAssigned && taskPost.TypeaheadDisplay">
+									<h4>Request Estimate and Completion Date:</h4>
+									<div class="request-estimate">
+										<label>
+											<input type="checkbox" ng-model="taskPost.IsRequestEstimateChecked" />
+											&nbsp;Request Estimate (optional)
+										</label>
+									</div>
+									<div class="form-group form-group-sm requested-completion-datepicker">
+										<div class="input-group">
+											<input type="text" class="form-control" placeholder="Request Completion Date (optional)" datepicker-popup="MM/dd/yyyy" ng-model="taskPost.RequestedCompletionDate" is-open="opened.requestedCompletionDate" max-date="$parent.today" datepicker-options="$parent.dpOptions()" />
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default" ng-click="openDatepicker($event, 'requestedCompletionDate')" style="margin-right: 0px;"><i class="glyphicon glyphicon-calendar"></i></button>
+											</span>
+										</div>
+									</div>
+								</div>
+								<div class="meta status">
+									<h4 ng-show="isVisible.isServiceTechReason">Reason on Hold:</h4>
+									<select class="form-control input-sm" style="width: 95%;" ng-model="userTask.ReasonModel" ng-options="opt as opt.Value for opt in userTask.InProgressReasonsList track by opt.Key" ng-change="saveInProgressReason()" ng-show="isVisible.isServiceTechReason"></select>
+									<button class="btn btn-primary btn-block" ng-click="postUserTask()" ng-show="isVisible.notAssigned && taskPost.TypeaheadDisplay"><i class="glyphicon glyphicon-envelope"></i>&nbsp;Post Task</button>
+									<button class="btn btn-warning btn-block" ng-click="updateUserTaskStatus('Cancelled')" ng-show="isVisible.taskPosted || isVisible.isBusinessSupervisor" ng-disabled="isSampleTask"><i class="glyphicon glyphicon-remove"></i>&nbsp;Cancel Task</button>
+									<button class="btn btn-success btn-block" ng-click="updateUserTaskStatus('Approved')" ng-show="isVisible.awaitingClientApproval"><i class="glyphicon glyphicon-ok"></i>&nbsp;Approve Task</button>
+									<button class="btn btn-success btn-block" ng-click="updateUserTaskStatus('InProgress')" ng-show="showStartTask()" ng-disabled="isSampleTask"><i class="glyphicon glyphicon-ok"></i>&nbsp;Start Task</button>
+									<div class="meta status" ng-show="(isUserTask || isClientTask) && userTask.CurrentTaskStatus != taskStatus.Completed && userTask.CurrentTaskStatus != taskStatus.Cancelled">
+										<h4>Work Performed By: <label>(optional)</label></h4>
+										<a href="#" editable-text="assignedUser" e-typeahead="x as x.TypeaheadDisplay for x in suggestContact($viewValue)" e-required e-placeholder="User, Business, Email" onbeforesave="assignCompleteUser($data)" oncancel="	$data = false" e-style="width:100%!important;">{{ typeaheadDisplayUser($data) || "Select User" }}</a>
+										<div class="meta status" ng-if="completeTask.IsNewContact && completeTask.AssignedUserRowId != null" style="margin-top: 20px; color: #666 !important;">
+											<h4 style="margin-top: 0px;">New Contact:</h4>
+											{{completeTask.TypeaheadDisplay}}
+										</div>
+										<div class="meta status" ng-if="completeTask.IsNewContact && completeTask.AssignedUserRowId == null" style="margin-top: 20px;">
+											<h4 style="margin-top: 0px;">New Contact:</h4>
+											First Name<br />
+											<input type="text" class="form-control new-contact" ng-model="completeTask.FirstName" />
+											Last Name<br />
+											<input type="text" class="form-control new-contact" ng-model="completeTask.LastName" />
+											<div class="request-estimate" ng-show="completeTask.AssignedUserRowId == null">
+												<label>
+													<input type="checkbox" name="isServiceProvider" ng-model="completeTask.IsBusiness" ng-click="completeTask.IsBusiness != completeTask.IsBusiness" />&nbsp;Service Provider
+												</label>
+											</div>
+											<div ng-show="completeTask.IsBusiness">
+												Business Name<br />
+												<input type="text" class="form-control new-contact" ng-model="completeTask.BusinessName" />
+												State<br />
+												<select ng-model="completeTask.State" class="form-control new-contact">
+													<option value="AL">Alabama</option>
+													<option value="AK">Alaska</option>
+													<option value="AZ">Arizona</option>
+													<option value="AR">Arkansas</option>
+													<option value="CA">California</option>
+													<option value="CO">Colorado</option>
+													<option value="CT">Connecticut</option>
+													<option value="DE">Delaware</option>
+													<option value="DC">District Of Columbia</option>
+													<option value="FL">Florida</option>
+													<option value="GA">Georgia</option>
+													<option value="HI">Hawaii</option>
+													<option value="ID">Idaho</option>
+													<option value="IL">Illinois</option>
+													<option value="IN">Indiana</option>
+													<option value="IA">Iowa</option>
+													<option value="KS">Kansas</option>
+													<option value="KY">Kentucky</option>
+													<option value="LA">Louisiana</option>
+													<option value="ME">Maine</option>
+													<option value="MD">Maryland</option>
+													<option value="MA">Massachusetts</option>
+													<option value="MI">Michigan</option>
+													<option value="MN">Minnesota</option>
+													<option value="MS">Mississippi</option>
+													<option value="MO">Missouri</option>
+													<option value="MT">Montana</option>
+													<option value="NE">Nebraska</option>
+													<option value="NV">Nevada</option>
+													<option value="NH">New Hampshire</option>
+													<option value="NJ">New Jersey</option>
+													<option value="NM">New Mexico</option>
+													<option value="NY">New York</option>
+													<option value="NC">North Carolina</option>
+													<option value="ND">North Dakota</option>
+													<option value="OH">Ohio</option>
+													<option value="OK">Oklahoma</option>
+													<option value="OR">Oregon</option>
+													<option value="PA">Pennsylvania</option>
+													<option value="RI">Rhode Island</option>
+													<option value="SC">South Carolina</option>
+													<option value="SD">South Dakota</option>
+													<option value="TN">Tennessee</option>
+													<option value="TX">Texas</option>
+													<option value="UT">Utah</option>
+													<option value="VT">Vermont</option>
+													<option value="VA">Virginia</option>
+													<option value="WA">Washington</option>
+													<option value="WV">West Virginia</option>
+													<option value="WI">Wisconsin</option>
+													<option value="WY">Wyoming</option>
+												</select>
+											</div>
+										</div>
+										<h4>Completed Date: <label>(optional)</label></h4>
+										<div class="form-group form-group-sm requested-completion-datepicker">
+											<div class="input-group">
+												<input type="text" class="form-control" placeholder="Completed Date" datepicker-popup="MM/dd/yyyy" ng-model="completeTask.CompleteDate" is-open="opened.completeDate" max-date="$parent.today" datepicker-options="$parent.dpOptions()" />
+												<span class="input-group-btn">
+													<button type="button" class="btn btn-default" ng-click="openDatepicker($event, 'completeDate')" style="margin-right: 0px;"><i class="glyphicon glyphicon-calendar"></i></button>
+												</span>
+											</div>
+										</div>
+									</div>
+									<button class="btn btn-success btn-block" ng-click="updateUserTaskStatus('Completed')" ng-show="(isUserTask || isClientTask) && userTask.CurrentTaskStatus != taskStatus.Completed && userTask.CurrentTaskStatus != taskStatus.Cancelled" ng-disabled="isSampleTask"><i class="glyphicon glyphicon-ok"></i>&nbsp;Complete Task</button>
+									<button class="btn btn-warning btn-block" ng-click="deleteUserTask()" ng-show="isVisible.notAssigned" ng-disabled="isSampleTask"><i class="glyphicon glyphicon-trash"></i>&nbsp;Delete Task</button>
+								</div>
+							</div>
+							<div class="meta status" ng-if="isServiceTechTask">
+								<button class="btn btn-success btn-block" ng-click="updateUserTaskStatus('ServiceTechInProgress')" ng-show="isVisible.startTaskServiceTech" ng-disabled="isSampleTask"><i class="glyphicon glyphicon-ok"></i>&nbsp;Start Task</button>
+								<div class="meta-status" ng-if="isVisible.completeTaskServiceTech">
+									<h4>Completed Date: <label>(optional)</label></h4>
+									<div class="form-group form-group-sm requested-completion-datepicker">
+										<div class="input-group">
+											<input type="text" class="form-control" placeholder="Completed Date" datepicker-popup="MM/dd/yyyy" ng-model="completeTask.CompleteDate" is-open="opened.completeDate" max-date="$parent.today" datepicker-options="$parent.dpOptions()" />
+											<span class="input-group-btn">
+												<button type="button" class="btn btn-default" ng-click="openDatepicker($event, 'completeDate')" style="margin-right: 0px;"><i class="glyphicon glyphicon-calendar"></i></button>
+											</span>
+										</div>
+									</div>
+									<button class="btn btn-success btn-block" ng-click="updateUserTaskStatus('ServiceTechCompleted')" ng-disabled="isSampleTask"><i class="glyphicon glyphicon-ok"></i>&nbsp;Complete Task</button>
+								</div>
+							</div>
+							<div class="meta status" ng-show="isSubcontractorTask">
+								<button class="btn btn-success btn-block" ng-click="updateUserTaskStatus('SubcontractorInProgress')" ng-show="isVisible.startTaskSubcontractor" ng-disabled="isSampleTask"><i class="glyphicon glyphicon-ok"></i>&nbsp;Start Task</button>
+								<button class="btn btn-success btn-block" ng-click="updateUserTaskStatus('SubcontractorCompleted')" ng-show="isVisible.completeTaskSubcontractor" ng-disabled="isSampleTask"><i class="glyphicon glyphicon-ok"></i>&nbsp;Complete Task</button>
+							</div>
+						</accordion-group>
+						<accordion-group is-open="true" ng-hide="isVisible.isSubcontractorServiceTech">
+							<accordion-heading>Task History</accordion-heading>
+							<div class="meta status">
+								<h4 ng-hide="isSubcontractorTask">Created By:</h4>
+								<p ng-hide="isSubcontractorTask">{{ userTask.CreateUserName }}</p>
+								<h4 ng-hide="isSubcontractorTask">Date Created:</h4>
+								<time ng-hide="isSubcontractorTask" ng-bind="userTask.DateTaskCreated | date:'fullDate'"></time>
+
+								<div ng-hide="isVisible.notAssigned">
+									<h4 ng-show="isSubcontractorTask">Assigned By:</h4>
+									<p ng-show="isSubcontractorTask">{{ userTask.AssignedUserDisplayName }}</p>
+
+									<h4 ng-show="userTask.AssignedUserDisplayName && !isSubcontractorTask">Assigned To:</h4>
+									<span ng-show="!userTask.isShowReassignddl && !isSubcontractorTask">{{ userTask.AssignedUserDisplayName }}</span>
+
+									<h4 ng-show="userTask.SubcontractorDisplayName && isSubcontractorTask">Assigned To:</h4>
+									<span ng-show="!userTask.isShowReassignddl && isSubcontractorTask">{{ userTask.SubcontractorDisplayName }}</span>
+
+									<div ng-if="isVisible.isBusinessSupervisor || isSubcontractorTask">
+										<select class="form-control input-sm" style="width: 100%;" ng-init="assignedSupervisorRowId = isSubcontractorTask ? userTask.SubcontractorRowId : userTask.AssignedUserRowId" ng-if="userTask.isShowReassignddl" ng-model="assignedSupervisorRowId" ng-options="supervisor.RowId as supervisor.DisplayName for supervisor in supervisors" ng-change="assignSupervisor(assignedSupervisorRowId)"></select>
+										<button class="btn btn-success btn-block" ng-hide="userTask.isShowReassignddl" class="link-text" ng-click="userTask.isShowReassignddl = true;"><i class="glyphicon glyphicon-edit"></i>&nbsp;Reassign Supervisor</button>
+										<button class="btn btn-warning btn-block" ng-show="userTask.isShowReassignddl" class="link-text" ng-click="userTask.isShowReassignddl = false;"><i class="glyphicon glyphicon-remove"></i>&nbsp;Cancel</button>
+									</div>
+
+									<h4 ng-hide="!userTask.DatePosted || isSubcontractorTask">Date Posted:</h4>
+									<time ng-hide="isSubcontractorTask" ng-bind="userTask.DatePosted | date:'fullDate'"></time>
+									<h4 ng-hide="!userTask.IsRequestEstimate || !userTask.DatePosted || isSubcontractorTask">Estimate Requested:</h4>
+									<p ng-hide="!userTask.IsRequestEstimate || !userTask.DatePosted || isSubcontractorTask">{{ userTask.IsRequestEstimateFormatted }}</p>
+									<h4 ng-hide="!userTask.RequestedCompletionDate || isSubcontractorTask">Completion Date:</h4>
+									<time ng-hide="!userTask.RequestedCompletionDate || isSubcontractorTask" ng-bind="userTask.RequestedCompletionDate | date:'fullDate'"></time>
+								</div>
+
+								<div class="meta status" ng-if="isClientTask || isSubcontractorTask">
+									<h4 ng-if="(userTask.userTaskServiceTechs | filter: { ServiceTechStatus: 'Service Tech Completed' }).length > 0">Service Techs Completed:</h4>
+									<ul class="list-group" style="margin-top: 10px;">
+										<li class="service-tech" ng-repeat="serviceTech in userTask.userTaskServiceTechs | filter: { ServiceTechStatus: 'Service Tech Completed' }" style="display: block; border-bottom: solid 1px #eee;">
+											<p style="color: #b4b5b9;">
+												<strong style="color: #444;">Service Tech:</strong> <span style="font-size: 14px;">{{serviceTech.ServiceTech.DisplayName || serviceTech.ServiceTechDisplayName}}</span>
+												<br />
+												<strong style="color: #444;">Complete Date:</strong> {{serviceTech.ServiceTechCompleteDate}}<br />
+												<span ng-if="serviceTech.ServiceTechCompleteDate != serviceTech.ServiceTechManualCompleteDate"><strong style="color: #444;">Manually Entered On:</strong> {{serviceTech.ServiceTechManualCompleteDate}}</span>
+											</p>
+										</li>
+									</ul>
+								</div>
+
+								<div class="meta status">
+									<tk-equipment-selector user-toys="clientToys" selected-toy-row-id="userTask.ToyRowId" selected-toy-name="userTask.ToyName" active-equipment-ids-list="userTask.ActiveToyEquipmentIdsList" is-save="isClientTask && isVisible.isBusinessSupervisor" is-edit="isClientTask && isVisible.isBusinessSupervisor" is-client="isClientTask && isVisible.isBusinessSupervisor" is-sample-task="false"></tk-equipment-selector>
+								</div>
+
+								<h4 ng-if="isVisible.approved && !isSubcontractorTask">Approved On:</h4>
+								<time ng-if="isVisible.approved && !isSubcontractorTask" ng-bind="userTask.DateApproved | date:'fullDate'"></time>
+								<h4 ng-if="isVisible.estimateSubmitted && !isSubcontractorTask">Estimate Submitted On:</h4>
+								<time ng-if="isVisible.estimateSubmitted && !isSubcontractorTask" ng-bind="userTask.DateEstimateSubmitted | date:'fullDate'"></time>
+								<h4 ng-if="isVisible.estimateApproved && !isSubcontractorTask">Estimate Approved On:</h4>
+								<time ng-if="isVisible.estimateApproved && !isSubcontractorTask" ng-bind="userTask.DateEstimateApproved | date:'fullDate'"></time>
+								<h4 ng-if="isVisible.estimateRejected && !isSubcontractorTask">Estimate Rejected On:</h4>
+								<time ng-if="isVisible.estimateRejected && !isSubcontractorTask" ng-bind="userTask.DateEstimateRejected | date:'fullDate'"></time>
+								<h4 ng-if="isVisible.inProgress">Task Started On:</h4>
+								<time ng-if="isVisible.inProgress" ng-bind="userTask.DateInProgress | date:'fullDate'"></time>
+								<h4 ng-if="isVisible.taskCompleted">Task Completed On:</h4>
+								<time ng-if="isVisible.taskCompleted" ng-bind="userTask.DateCompleted | date:'fullDate'"></time>
+								<p ng-if="isVisible.taskCompleted && userTask.IsCompletionDateManuallyEntered">Manually entered on <time ng-bind="userTask.CompletedStatusDateCreatedFormatted | date:'fullDate'"></time></p>
+								<h4 ng-if="isVisible.taskCompleted && !isSubcontractorTask">Work Performed By:</h4>
+								<time ng-if="isVisible.taskCompleted && !isSubcontractorTask" ng-bind="userTask.CompletedUserName"></time>
+								<p ng-if="isVisible.taskCompleted && userTask.IsCompletionManuallyEntered && !isSubcontractorTask">Manually entered by {{ userTask.CompletionManuallyEnteredUserName }}</p>
+							</div>
+						</accordion-group>
+						<accordion-group is-open="false" ng-if="isVisible.isAssignServiceTech">
+							<accordion-heading>Service Technicians</accordion-heading>
+							<div class="meta status" ng-if="!isVisible.taskClosed">
+								<h4 style="margin-top: 0px;">Assign Service Tech:</h4>
+								<a ng-if="!userTask.Opcode" href="#" editable-text="userTask.ServiceTech" ng-model="userTask.ServiceTech" e-typeahead="x as x.TypeaheadDisplay for x in suggestServiceTech($viewValue)" e-required e-placeholder="Tech name or email" onbeforesave="checkUser($data)" oncancel="$data = false" e-style="width:100%!important;">{{ typeaheadDisplayServiceTech($data) || "Select Service Tech" }}</a>
+								<a ng-if="userTask.Opcode" href="#" editable-text="userTask.ServiceTech" ng-model="userTask.ServiceTech" e-typeahead="x as x.TypeaheadDisplay for x in suggestServiceTechDm($viewValue)" e-required e-placeholder="Tech name or email" onbeforesave="checkUser($data)" oncancel="$data = false" e-style="width:100%!important;">{{ typeaheadDisplayServiceTech($data) || "Select Service Tech" }}</a>
+								<button class="btn btn-primary btn-block" ng-show="taskPost.TypeaheadDisplay" ng-click="assignServiceTech()"><i class="glyphicon glyphicon-wrench"></i>&nbsp;Assign Service Tech</button>
+								<hr />
+							</div>
+							<div class="meta status">
+								<ul class="list-group" style="margin-top: 10px;">
+									<li class="service-tech" ng-repeat="serviceTech in userTask.userTaskServiceTechs">
+										<span style="font-size: 14px;">{{serviceTech.ServiceTech.DisplayName || serviceTech.ServiceTechDisplayName}}</span>
+										<i class="pull-right glyphicon glyphicon-remove-sign" title="Remove Service Tech" ng-click="removeServiceTech(serviceTech.RowId)" style="top: 6px;" ng-if="!isVisible.taskClosed"></i>
+										<br />
+										<strong>Status:</strong> {{serviceTech.ServiceTechStatus}}
+									</li>
+								</ul>
+							</div>
+						</accordion-group>
+						<accordion-group is-open="false" ng-if="isVisible.isAssignSubcontractor">
+							<accordion-heading>Subcontractors</accordion-heading>
+							<div class="meta status" ng-if="!isVisible.taskClosed">
+								<h4 style="margin-top: 0px;">Assign Subcontractor:</h4>
+								<select class="form-control input-sm" style="width: 100%;" ng-model="userTask.Subcontractor.RowId" ng-options="sc.RowId as sc.UserBusinessName for sc in subcontractors"></select>
+								<button class="btn btn-primary btn-block" ng-show="userTask.Subcontractor" ng-click="assignSubcontractor()"><i class="glyphicon glyphicon-wrench"></i>&nbsp;Assign Subcontractor</button>
+								<hr />
+							</div>
+							<div class="meta status">
+								<ul class="list-group" style="margin-top: 10px;">
+									<li class="service-tech" ng-repeat="subcontractor in userTask.userTaskSubcontractors" style="padding-bottom: 10px; border-bottom: solid 1px #eee;">
+										<span style="font-size: 14px;" ng-bind="subcontractor.Subcontractor.DisplayName"></span>
+										<i class="pull-right glyphicon glyphicon-remove-sign" title="Remove Subcontractor" ng-click="removeSubcontractor(subcontractor.RowId)" style="top: 6px; right: 3px;" ng-if="!isVisible.taskClosed"></i>
+										<br />
+										<strong>Status:</strong> {{subcontractor.SubcontractorStatus}}
+										<br />
+										<strong>Notes</strong>
+										<i class="pull-right glyphicon glyphicon-chevron-down" title="View Notes" ng-click="viewSubcontractorNotes(subcontractor)" style="top: 2px; right: 3px;" ng-class="{'glyphicon-chevron-down': !subcontractor.isNotesVisible, 'glyphicon-chevron-up': subcontractor.isNotesVisible}"></i>
+										<div style="cursor: default; margin-top: 3px;" ng-show="subcontractor.isNotesVisible">
+											<div style="overflow-y: scroll; height: 200px; resize: vertical; border: solid 1px #ccc;">
+												<ul class="list-group" style="margin: 0 0 10px;">
+													<li class="list-group-item" ng-repeat="note in subcontractor.SubcontractorNotes track by $index | orderBy:note.DateCreated">
+														<span class="badge" style="font-size: 10px; border-radius: 1px; background: rgba(0,0,0,.15)" ng-bind="note.DateCreated | date:'MM/dd/yyyy'"></span>
+														<strong ng-bind="note.CreatedByDisplayName" style="color: #666">User Name</strong> <p ng-bind="note.Note">Note goes here.</p>
+													</li>
+												</ul>
+											</div>
+											<textarea class="form-control input-sm" style="margin-top: 2px;" ng-model="subcontractor.note" placeholder="Add a Subcontractor note here..." ng-show="!isVisible.taskClosed"></textarea>
+											<button class="btn btn-success btn-block" ng-click="saveSubcontractorNote(subcontractor, false)" ng-show="!isVisible.taskClosed">Save Note</button>
+										</div>
+									</li>
+								</ul>
+							</div>
+						</accordion-group>
+						<accordion-group is-open="false" ng-show="userTask.IsRequestEstimate">
+							<accordion-heading>Estimate</accordion-heading>
+							<div class="meta status">
+								<h4 ng-show="userTask.DatePosted">Estimate Requested On:</h4>
+								<time ng-bind="userTask.DatePosted | date:'fullDate'"></time>
+							</div>
+							<div class="meta status" ng-show="isVisible.pendingEstimate">
+								<h4>Enter Estimate Amount:</h4>
+								<input type="text" ng-model="userTask.EstimateAmount" class="estimate-currency" ng-currency />
+								<button class="btn btn-success btn-block" ng-click="submitEstimate()" ng-show="userTask.EstimateAmount"><i class="glyphicon glyphicon-ok"></i>&nbsp;Submit Estimate</button>
+							</div>
+							<div class="meta status" ng-show="isVisible.estimateSubmitted">
+								<h4>Estimate Submitted On:</h4>
+								<time ng-bind="userTask.DateEstimateSubmitted | date:'fullDate'"></time>
+								<h4>Submitted Estimate Amount:</h4>
+								<p>{{userTask.EstimateAmount|currency}}</p>
+							</div>
+							<div class="meta status" ng-show="isVisible.estimateApproved">
+								<h4>Estimate Approved On:</h4>
+								<time ng-bind="userTask.DateEstimateApproved | date:'fullDate'"></time>
+							</div>
+							<div class="meta status" ng-show="isVisible.estimateRejected">
+								<h4>Estimate Rejected On:</h4>
+								<time ng-bind="userTask.DateEstimateRejected | date:'fullDate'"></time>
+							</div>
+							<div class="meta status" ng-show="isVisible.awaitingApproval">
+								<button class="btn btn-success btn-block" ng-click="updateUserTaskStatus('EstimateApproved')"><i class="glyphicon glyphicon-ok"></i>&nbsp;Approve Estimate</button>
+								<button class="btn btn-warning btn-block" ng-click="updateUserTaskStatus('EstimateRejected')"><i class="glyphicon glyphicon-remove"></i>&nbsp;Reject Estimate</button>
+							</div>
+						</accordion-group>
+						<accordion-group ng-repeat="group in notesSubcontractorGroup" heading="{{group.title}}" is-open="group.open" ng-if="isSubcontractorTask">
+							<div style="cursor: default;">
+								<div style="overflow-y: scroll; height: 200px; resize: vertical; border: solid 1px #ccc;">
+									<ul class="list-group" style="margin: 0 0 10px;">
+										<li class="list-group-item" ng-repeat="note in userTask.SubcontractorNotes track by $index | orderBy:note.DateCreated">
+											<span class="badge" style="font-size: 10px; border-radius: 1px; background: rgba(0,0,0,.15)" ng-bind="note.DateCreated | date:'MM/dd/yyyy'"></span>
+											<strong ng-bind="note.CreatedByDisplayName" style="color: #666">User Name</strong> <p ng-bind="note.Note">Note goes here.</p>
+										</li>
+									</ul>
+								</div>
+								<textarea class="form-control input-sm" style="margin-top: 2px;" ng-model="userTask.note" placeholder="Add a task note here..." ng-show="!isVisible.taskClosed" ng-cancel-drag></textarea>
+								<button class="btn btn-success btn-block" ng-click="saveSubcontractorNote(userTask)" ng-show="!isVisible.taskClosed">Save Note</button>
+							</div>
+						</accordion-group>
+						<accordion-group ng-repeat="group in notesCustomerGroup" heading="{{group.title}}" is-open="group.open" ng-if="isUserTask || isClientTask">
+							<div style="cursor: default;">
+								<div style="overflow-y: scroll; height: 200px; resize: vertical; border: solid 1px #ccc;">
+									<ul class="list-group" style="margin: 0 0 10px;">
+										<li class="list-group-item" ng-repeat="note in userTask.CustomerNotes track by $index | orderBy:note.DateCreated" ng-cancel-drag>
+											<span class="badge" style="font-size: 10px; border-radius: 1px; background: rgba(0,0,0,.15)" ng-bind="note.DateCreated | date:'MM/dd/yyyy'" ng-cancel-drag></span>
+											<strong ng-bind="note.CreatedByDisplayName" style="color:#222" ng-cancel-drag>Username</strong> <p style="color:#222" ng-bind="note.Note" ng-cancel-drag>Note goes here.</p>
+										</li>
+									</ul>
+								</div>
+								<textarea class="form-control input-sm" style="margin-top: 2px;" ng-model="userNote" placeholder="Add a task note here..." ng-show="!isVisible.taskClosed" ng-cancel-drag></textarea>
+								<button class="btn btn-success btn-block" ng-click="saveNotes(userNote, false); userNote=''" ng-show="!isVisible.taskClosed" ng-disabled="isSampleTask" ng-cancel-drag>Save Notes</button>
+							</div>
+						</accordion-group>
+						<accordion-group ng-repeat="group in notesServiceTechGroup" heading="{{group.title}}" is-open="group.open" ng-if="isBusinessSupervisor || isBusinessServiceTech">
+							<div style="cursor: default;">
+								<div style="overflow-y: scroll; height: 200px; resize: vertical; border: solid 1px #ccc;">
+									<ul class="list-group" style="margin: 0 0 10px;">
+										<li class="list-group-item" ng-repeat="note in userTask.ServiceTechNotes track by $index | orderBy:note.DateCreated">
+											<span class="badge" style="font-size: 10px; border-radius: 1px; background: rgba(0,0,0,.15)" ng-bind="note.DateCreated | date:'MM/dd/yyyy'"></span>
+											<strong ng-bind="note.CreatedByDisplayName" style="color: #666">Username</strong> <p ng-bind="note.Note">Note goes here.</p>
+										</li>
+									</ul>
+								</div>
+								<textarea class="form-control input-sm" style="margin-top: 2px;" ng-model="userNote" placeholder="Add a task note here..." ng-show="!isVisible.taskClosed" ng-cancel-drag></textarea>
+								<button class="btn btn-success btn-block" ng-click="saveNotes(userNote, true); userNote=''" ng-show="!isVisible.taskClosed" ng-disabled="isSampleTask">Save Notes</button>
+							</div>
+						</accordion-group>
+						<accordion-group ng-repeat="group in feedbackGroup" heading="{{group.title}}" is-open="group.open" ng-show="isUserTask || isSharedTask">
+							<div style="cursor: default;">
+								<div style="overflow-y:scroll; height:200px; resize: vertical; border: solid;">
+									<ul class="list-group" style="margin: 0 0 10px;">
+										<li class="list-group-item" ng-repeat="comment in userTask.Feedbacks track by $index | orderBy:comment.DateCreated">
+											<span class="badge" style="font-size: 10px; border-radius: 1px; background: rgba(0,0,0,.15)" ng-bind="comment.DateCreated | date:'MM/dd/yyyy'"></span>
+											<strong ng-bind="comment.CreatedByDisplayName" style="color: #666">Username</strong> <p ng-bind="comment.Message">Feedback comment goes here.</p>
+										</li>
+									</ul>
+								</div>
+								<textarea class="form-control input-sm" ng-model="feedbackComment" placeholder="Add feedback here..." style="margin-top: 2px;"></textarea>
+								<button class="btn btn-success btn-block" ng-click="saveFeedbackComment(feedbackComment); feedbackComment=''" ng-disabled="isSampleTask">Add Comment</button>
+								<span style="font-size:10px;color:#ccc;line-height:1.4;display:block;margin-top:8px;">Sharing a task is not an assignment of a task. If you share a task it is simply shown to other users you selected and not considered to be an official order for work.</span>
+								<div ng-hide="isSharedTask">
+									<h4>Share With:</h4>
+									<a href="#" editable-text="assignedSharedUser" e-typeahead="x as x.TypeaheadDisplay for x in suggestContact($viewValue)" e-style="width:100%!important;"
+									   e-required e-placeholder="User, Business, Email" onbeforesave="assignSharedUser($data); $data = null" oncancel="$data = null;">
+										{{ assignedUser.TypeaheadDisplay || $data || "Select User" }}
+									</a>
+									<div style="overflow-y:scroll; height:150px; resize: vertical; border: solid;">
+										<ul class="list-group">
+											<li class="list-group-item" ng-repeat="shared in userTask.SharedWith track by $index | orderBy:shared.TypeaheadDisplay">
+												<strong ng-bind="shared.TypeaheadDisplay">Username</strong>
+												<i class="pull-right glyphicon glyphicon-remove-sign" ng-click="unassignSharedUser(shared.RowId)" style="cursor:pointer"></i>
+											</li>
+										</ul>
+									</div>
+								</div>
+							</div>
+						</accordion-group>
+						<accordion-group is-open="false" ng-show="(isClientTask || isServiceTechTask || isSubcontractorTask) && isBusinessPremium && isVisible.inProgress">
+							<accordion-heading>Log Hours & Expenses</accordion-heading>
+							<tk-user-task-hours user-task="userTask" parent-task-group="userTaskGroup" user-task-hours="userTask.UserTaskHours"></tk-user-task-hours>
+						</accordion-group>
+					</accordion>
+				</div>
+			</div>
+		</div>
+		<div class="task-footer row">
+			<div class="col-xs-12 col-sm-8 tags">
+				<h4>Tags:</h4>
+				<tags-input ng-model="userTask.UserTaskTags" display-property="Tag" replace-spaces-with-dashes="false" on-tag-added="saveUserTaskTag(userTask, $tag)" on-tag-removed="deleteUserTaskTag($tag)" ng-hide="isVisible.taskClosed || isSharedTask"></tags-input>
+				<span ng-repeat="tag in userTask.UserTaskTags" ng-show="isVisible.taskClosed || isSharedTask">{{tag.Tag}}&nbsp;&nbsp;</span>
+			</div>
+			<div class="col-xs-12 col-sm-4">
+			</div>
+		</div>
+	</div>
+</div>

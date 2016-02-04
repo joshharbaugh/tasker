@@ -1,0 +1,8 @@
+﻿<div ng-if="taskList.open" class="row bulk-assign" ng-show="taskList.isReassignSupervisorOpen">
+	<div class="col-xs-4">
+		<h4 style="margin-top: 0px;">Reassign Selected Tasks to another Supervisor:</h4>
+		<select ng-model="selectedSupervisor.RowId" ng-options="supervisor.RowId as supervisor.DisplayName for supervisor in supervisors" class="form-control input-sm" style="width: 100%;"></select>
+		<button class="btn btn-primary btn-block" style="margin-top: 20px;" ng-click="reassignSupervisor()" ng-show="selectedSupervisor.RowId != selectedSupervisor.ViewingUserRowId"><i class="glyphicon glyphicon-log-out"></i>&nbsp;Reassign Supervisor</button>
+		<button class="btn btn-warning btn-block" style="margin-top: 10px;" ng-click="cancelReassignSupervisor()"><i class="glyphicon glyphicon-remove"></i>&nbsp;Cancel</button>
+	</div>
+</div>

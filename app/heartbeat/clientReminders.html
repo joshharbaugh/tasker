@@ -1,0 +1,109 @@
+﻿<div class="panel panel-default">
+    <div class="panel-heading">
+        <h3 class="panel-title">
+            <a class="collapsed" data-toggle="collapse" data-target="#client_reminders" href="javascript:;"><em class="hidden-xs glyphicon glyphicon-move handle"></em> Client Reminders <span data-ng-show="isLoading" class="pull-right"><i class="glyphicon glyphicon-refresh animated"></i></span></a>
+        </h3>
+    </div>
+    <div class="panel-collapse collapse" id="client_reminders">
+        <div class="panel-body">
+            <div class="row">
+                <div class="col-xs-12">
+                    <select class="form-control input-sm" ng-model="vm.selected_client" style="width: 100%; margin-bottom: 5px">
+                        <option value="">-- Client / Boat Name --</option>
+                        <optgroup label="{{client.DisplayName}}" ng-repeat="client in user.clients track by client.UserRowId">
+                            <option ng-if="client.Toys.length > 0" label="{{toy.ToyName}}" value='{"UserRowId": {{client.UserRowId}}, "RowId": {{toy.RowId}}, "ToyName": "{{toy.ToyName}}"}' ng-repeat="toy in client.Toys track by toy.RowId">{{toy.ToyName}}</option>
+                            <option ng-if="client.Toys.length == 0" label="{{client.DisplayName}}" value='{"UserRowId": {{client.UserRowId}}, "RowId": {{client.UserRowId}}}'>{{client.DisplayName}}</option>
+                        </optgroup>
+                    </select>
+                    <ul class="nav nav-pills" style="margin-bottom: 6px">
+                        <li ng-class="{active: client_reminders_status == 'all'}">
+                            <a href="javascript:;" ng-click="applyStatusFilter('all')">All</a>
+                        </li>
+                        <li ng-class="{active: client_reminders_status == 'upcoming'}">
+                            <a href="javascript:;" ng-click="applyStatusFilter('upcoming')">Upcoming</a>
+                        </li>
+                        <li ng-class="{active: client_reminders_status == 'pastdue'}">
+                            <a href="javascript:;" ng-click="applyStatusFilter('pastdue')">Past Due</a>
+                        </li>                        
+                    </ul>
+                    <div class="tab-content" style="max-height: 400px; overflow: auto;">
+                        <div class="tab-pane" ng-class="{active: !vm['reminders'] || vm['reminders'].length === 0}">
+                            <ul class="list-group">
+                                <li class="list-group-item">
+                                    <p ng-if="!vm['reminders']" style="margin: 0; text-align: center; font-size: 16px">Select a client above to load their reminders</p>
+                                    <p ng-if="vm['reminders'].length === 0" style="margin: 0; text-align: center; font-size: 16px">No reminders found with that status</p>
+                                </li>
+                            </ul>                            
+                        </div>
+                        <div class="tab-pane" id="client_reminders_upcoming" ng-class="{active: client_reminders_status === 'upcoming' && vm['reminders'].length > 0}">
+                            <ul class="list-group" style="margin: 0">
+                                <li class="list-group-item" ng-repeat="reminder in vm['reminders'] | filter : status === 'upcoming'">
+                                    <p>
+                                        {{ reminder.DateofLastAction | date : 'short' }}<br />
+                                        <strong>{{ reminder.Title }}</strong><br />
+                                        {{ reminder.Description }}
+                                    </p>
+                                    <ul style="list-style: disc; padding-left: 15px">
+                                        <li ng-repeat="step in reminder.Templates">
+                                            {{ step }}
+                                        </li>
+                                    </ul>
+                                    <p>
+                                        <a class="button" href="javascript:;" ng-click="reminderTaskIt(reminder)">Task It</a>
+                                        <a class="button" href="javascript:;" ng-click="reminderDismiss(reminder)">Dismiss It</a>
+                                        <a class="button" href="javascript:;" ng-click="reminderSnooze(reminder)">Snooze</a>
+                                        <a class="button" target="_blank" ng-href="/Tasker#/tasks?clientId={{reminder.UserRowId}}&clientName={{vm.selected_client.FirstName}} {{vm.selected_client.LastName}}&reminders=true&filterStatus={{reminder.Status}}&clientSearch=true">View</a>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane" id="client_reminders_pastdue" ng-class="{active: client_reminders_status === 'pastdue' && vm['reminders'].length > 0}">
+                            <ul class="list-group" style="margin: 0">
+                                <li class="list-group-item list-group-item-warning" ng-repeat="reminder in vm['reminders'] | filter : status === 'pastdue'">
+                                    <p>
+                                        {{ reminder.DateofLastAction | date : 'short' }}<br />
+                                        <strong>{{ reminder.Title }}</strong><br />
+                                        {{ reminder.Description }}
+                                    </p>
+                                    <ul style="list-style: disc; padding-left: 15px">
+                                        <li ng-repeat="step in reminder.Templates">
+                                            {{ step }}
+                                        </li>
+                                    </ul>
+                                    <p>
+                                        <a class="button" href="javascript:;" ng-click="reminderTaskIt(reminder)">Task It</a>
+                                        <a class="button" href="javascript:;" ng-click="reminderDismiss(reminder)">Dismiss It</a>
+                                        <a class="button" href="javascript:;" ng-click="reminderSnooze(reminder)">Snooze</a>
+                                        <a class="button" target="_blank" ng-href="/Tasker#/tasks?clientId={{reminder.UserRowId}}&clientName={{vm.selected_client.FirstName}} {{vm.selected_client.LastName}}&reminders=true&filterStatus={{reminder.Status}}&clientSearch=true">View</a>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="tab-pane" id="client_reminders_all" ng-class="{active: client_reminders_status === 'all' && vm['reminders'].length > 0}">
+                            <ul class="list-group" style="margin: 0">
+                                <li class="list-group-item" ng-repeat="reminder in vm['reminders']">
+                                    <p>
+                                        {{ reminder.DateofLastAction | date : 'short' }}<br />
+                                        <strong>{{ reminder.Title }}</strong><br />
+                                        {{ reminder.Description }}
+                                    </p>
+                                    <ul style="list-style: disc; padding-left: 15px">
+                                        <li ng-repeat="step in reminder.Templates">
+                                            {{ step }}
+                                        </li>
+                                    </ul>
+                                    <p>
+                                        <a class="button" href="javascript:;" ng-click="reminderTaskIt(reminder)">Task It</a>
+                                        <a class="button" href="javascript:;" ng-click="reminderDismiss(reminder)">Dismiss It</a>
+                                        <a class="button" href="javascript:;" ng-click="reminderSnooze(reminder)">Snooze</a>
+                                        <a class="button" target="_blank" ng-href="/Tasker#/tasks?clientId={{reminder.UserRowId}}&clientName={{vm.selected_client.FirstName}} {{vm.selected_client.LastName}}&reminders=true&filterStatus={{reminder.Status}}&clientSearch=true">View</a>
+                                    </p>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

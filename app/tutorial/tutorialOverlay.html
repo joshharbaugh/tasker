@@ -1,0 +1,70 @@
+﻿<a href="javascript:;" ng-click="toggle()" ng-class="{'icon-sm': isOverlayHidden}">
+    <span ng-show="isOverlayHidden">&laquo; Tutorial</span>
+    <i ng-show="!isOverlayHidden" class="glyphicon glyphicon-remove-circle"></i>
+</a>
+<div id="tutorial-overlay" style="display:none">
+    <img class="logo" src="/Images/logo_alpha_channel.png"/>
+</div>
+<ol id="dashboardTour" style="display:none"
+    data-joyride
+    tour-widget="{'autoStart': true, 'nextButton': false}">
+    <li>
+        <h4>Welcome to MyTaskIt</h4>
+        <p>Use this tutorial to take a look around at our new features. You can close the tutorial at any time by clicking the "X" in the top right corner. If you want to see the tutorial again, click the "?" in the top right corner.</p>
+        <button type="button" class="btn btn-info joyride-next-tip">Start tour</button>
+    </li>
+    <li ng-if="userCategory == 'Owner' || userCategory == 'Enthusiast'" data-id="litasks" data-options="">
+        <p><strong>Primary and secondary navigation</strong></p>
+        <p>This is how you navigate our site. Use this top row to access your tasks, your stuff, contacts and on the far right side of the top row, search the entire site for users, recommendations, etc. Find a Pro, and updating your profile (click on the arrow next to the small round picture).</p>
+        <button type="button" class="btn btn-info joyride-next-tip">Next</button>
+    </li>
+    <li ng-if="userCategory == 'Business' || userCategory == 'BusinessFree' || userCategory == 'BusinessPremium'" data-id="litasks" data-options="">
+        <p><strong>Primary and secondary navigation</strong></p>
+        <p>This is how you navigate our site.  Use this top row to access your tasks, your clients, and on the far right side of the top row, search the entire site for users, recommendations, etc. and updating your profile (click on the arrow next to the small round picture).</p>
+        <button type="button" class="btn btn-info joyride-next-tip">Next</button>
+    </li>
+    <li ng-if="userCategory == 'Owner' || userCategory == 'Enthusiast'" data-id="limytasks" data-options="">
+        <p><strong>Top menu</strong></p>
+        <p>Use these functions to access your tasks, view your task reminders, and search our entire task library.</p>
+        <button type="button" class="btn btn-info joyride-next-tip">Next</button>
+    </li>
+    <li ng-if="userCategory == 'Business' || userCategory == 'BusinessFree' || userCategory == 'BusinessPremium'" data-id="limytasks" data-options="">
+        <p><strong>Top menu</strong></p>
+        <p>Use these functions to access your tasks, view your task reminders, and search our entire task library.</p>
+        <button type="button" class="btn btn-info joyride-next-tip">Next</button>
+    </li>
+    <li ng-if="userCategory == 'Owner' || userCategory == 'Enthusiast'" data-id="searchTasks" data-options="">
+        <p><strong>Task Search</strong></p>
+        <p>Use this to search your tasks. Search or filter just about anything you want people, things you own, tags, photos, videos. You name it, we'll find it. The arrow on the far right will expand and collapse the search box.</p>
+        <button type="button" class="btn btn-info joyride-next-tip">Next</button>
+    </li>
+    <li ng-if="userCategory == 'Business' || userCategory == 'BusinessFree' || userCategory == 'BusinessPremium'" data-id="searchTasks" data-options="">
+        <p><strong>Task Search</strong></p>
+        <p>Got an email or phone call from a client wanting a status? Use this to search for tasks or clients to quickly update them.  Search or filter just about anything you want clients, client assets, tags, photos, videos. You name it, we'll find it. The arrow on the far right will expand and collapse the search box.</p>
+        <button type="button" class="btn btn-info joyride-next-tip">Next</button>
+    </li>
+    <li data-class="user-task-list" data-options="">
+        <p>We also have two permanent lists, Shared with Me and Tasks. These let you quickly see tasks that others have shared with you and tasks that are not part of any list.</p>
+        <button type="button" class="btn btn-info joyride-next-tip">Next</button>
+    </li>
+    <li ng-if="userCategory == 'Owner' || userCategory == 'Enthusiast'" data-id="tourStopCreateNewTask" data-options="">
+        <p><strong>Create a new task</strong></p>
+        <p>Create your tasks here. Any task you want. Start typing then click TaskIt! to get started.</p>
+        <button type="button" class="btn btn-info joyride-next-tip">Next</button>
+    </li>
+    <li ng-if="userCategory == 'Business' || userCategory == 'BusinessFree' || userCategory == 'BusinessPremium'" data-id="tourStopCreateNewTask" data-options="">
+        <p><strong>Create a new task</strong></p>
+        <p>Create your tasks here. Any task you want. Then click TaskIt! to get started. You can also create tasks on behalf of clients? Need to do an oil change and want client approval? Just type the task, click the drop down arrow and you'll create a task on behalf of any client you select.</p>
+        <button type="button" class="btn btn-info joyride-next-tip">Next</button>
+    </li>
+    <li ng-if="userCategory == 'Owner' || userCategory == 'Enthusiast'" data-id="tourStopYourNewTask" data-options="tipLocation:right;tipAdjustmentY:-25;tipAdjustmentX:-10">
+        <p><strong>Your new task</strong></p>
+        <p>Click here to expand any task you have created. This will allow you to add photos and videos to any task, assign the task to someone else such as a service provider, add custom search tags and share tasks with friends and family for feedback.</p>
+        <button type="button" class="btn btn-info" onclick="jQuery('document').joyride('end'); jQuery('body').trigger('tourEnded');">Done</button>
+    </li>
+    <li ng-if="userCategory == 'Business' || userCategory == 'BusinessFree' || userCategory == 'BusinessPremium'" data-id="tourStopYourNewTask" data-options="tipLocation:right;tipAdjustmentY:-25;tipAdjustmentX:-10">
+        <p><strong>Your new task</strong></p>
+        <p>Click here to expand any task you have created. This will allow you to add photos and videos to any task and also view photos and videos clients have uploaded, view client messages, assign the task to a service technician, check work status, view tech notes, add custom search tags, and allow service techs to log hours, parts and expenses associated with a task.</p>
+        <button type="button" class="btn btn-info" onclick="jQuery('document').joyride('end'); jQuery('body').trigger('tourEnded');">Done</button>
+    </li>
+</ol>

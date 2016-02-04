@@ -1,0 +1,12 @@
+﻿<i class="glyphicon glyphicon-th-list" style="position: absolute; right: 100px;" ng-class="{'disabled': !taskList.numSelected || taskList.numSelected < 2}" ng-click="taskList.isBulkActionsOpen = taskList.numSelected > 1 ? !taskList.isBulkActionsOpen : false"></i>
+<div class="dropdown" ng-show="taskList.isBulkActionsOpen" ng-init="taskList.isBulkActionsOpen = false">
+	<ul class="dropdown-menu bulk-actions" role="menu">
+		<li ng-show="isVisible.PostSelectedTasks"><a href="javascript:;" ng-click="openAssignUser()">Post Selected Tasks</a></li>
+		<li ng-show="isVisible.CompleteSelectedTasks"><a href="javascript:;" ng-click="completeSelectedTasks()">Complete Selected Tasks</a></li>
+		<li ng-show="isVisible.DeleteSelectedTasks"><a href="javascript:;" class="delete" ng-click="deleteSelectedTasks()">Delete Selected Tasks</a></li>
+		<li ng-show="isVisible.StartSelectedTasks"><a href="javascript:;" ng-click="startSelectedTasks()">Start Selected Tasks</a></li>
+		<li ng-show="isVisible.ReassignSupervisor"><a href="javascript:;" ng-click="reassignSupervisor()">Reassign Supervisor</a></li>
+		<li ng-show="isVisible.AssignServiceTech"><a href="javascript:;" ng-click="assignServiceTech()">Assign Service Tech</a></li>
+		<li ng-show="isVisible.AssignSubcontractor"><a href="javascript:;" ng-click="assignSubcontractor()">Assign Subcontractor</a></li>
+	</ul>
+</div>

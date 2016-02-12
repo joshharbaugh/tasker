@@ -1,0 +1,53 @@
+﻿<div class="clearfix">
+    <div class="clearfix grid-groupby">
+        <div class="clearfix">
+            <div class="col-xs-12">
+                <button class="btn btn-primary pull-left" ng-disabled="!isSaveIndexEnabled" ng-click="openModal()">Show Child Grid</button>
+                <div class="pull-right">
+                    <form class="form-inline">
+                        <select ng-model="clientNameSelect" class="form-control"
+                                ng-options="u for u in filterMasterData.TaskUserName track by u"
+                                ng-change="filterGridData(clientNameSelect, 'TaskUserName')">
+                        </select>
+                        <select ng-model="boatNameSelect" class="form-control"
+                                ng-options="u for u in filterMasterData.ToyName track by u"
+                                ng-change="filterGridData(boatNameSelect, 'ToyName')" >
+                        </select>
+                        <select ng-model="serviceTechSelect" class="form-control"
+                                ng-options="u for u in filterMasterData.ServiceTechDisplayName track by u"
+                                ng-change="filterGridData(serviceTechSelect, 'ServiceTechDisplayName')">
+                        </select>
+                        <select ng-model="statusSelect" class="form-control"
+                                ng-options="u for u in filterMasterData.CurrentTaskStatusDescription track by u"
+                                ng-change="filterGridData(statusSelect, 'CurrentTaskStatusDescription')">
+                        </select>
+                    </form>
+                </div>  
+            </div>
+        </div>
+        <div class="clearfix">
+            <div class="col-xs-12">
+                <div class="pull-right">
+                    <form class="form-inline">
+                        <div class="form-group">
+                            <label for="exampleInputName2">You are currently viewing Client Name, Boat Name, Tech Assigned, Status</label>
+                            <a id="clearFilter" class="link-text" ng-click="clearFilter()">Clear</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="clearfix">
+        <div id="grdTasks" ui-grid="gridOptions"
+             class="grid"
+             ui-grid-resize-columns
+             ui-grid-selection
+             ui-grid-move-columns
+             ui-grid-draggable-rows>
+            <div class="nodatatxt" ng-if="!loading && gridOptions.data.length==0">
+            No Records Found
+            </div>
+        </div>
+    </div>
+</div>

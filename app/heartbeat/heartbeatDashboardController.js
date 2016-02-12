@@ -19,60 +19,18 @@ angular.module('myVillages.tasker.app.heartbeat')
             // Set initial panel refresh rate (default: 30 seconds)
             $rootScope.refreshRate = '30000';
 
-            $scope.$on('$viewContentLoaded', function () {
-                var checkPackeryLoaded = setInterval(function () {
-                    try {
-                        if ($.fn.packery && window.Draggabilly && !window.isMobile()) {
-                            clearInterval(checkPackeryLoaded)
-                            $layout = $('#layout').packery({
-                                itemSelector: '.panel',
-                                percentPosition: true,
-                                gutter: 10,
-                                isInitLayout: false
-                            })
-
-                            $layout.on('dragItemPositioned', function (event, draggedItem) {
-                                // manually init (mimick 'snapping')
-                                $timeout(function () {
-                                    $layout.packery()
-                                })
-                            })
-                            
-                            $layout.find('.panel').each(function (i, layoutItem) {
-                                var drag = new Draggabilly(layoutItem, {
-                                    handle: '.handle'
-                                })
-                                $layout.packery('bindDraggabillyEvents', drag)
-
-                                $(layoutItem).on('shown.bs.collapse', function () {
-                                    // manually init draggable adaptive layout
-                                    $timeout(function () {
-                                        $layout.packery()
-                                    })
-                                })
-
-                                $(layoutItem).on('hidden.bs.collapse', function () {
-                                    // manually init draggable adaptive layout
-                                    $timeout(function () {
-                                        $layout.packery()
-                                    })
-                                })
-                            })
-                        }
-                    } catch (e) {
-                        if(console && console.error) console.error(e)
-                    }
-                }, 100)
+            $scope.$on('draggable:end', function (evt, obj) {
+                var elm = angular.element(obj.element)
+                elm.removeClass('drag-enter')
             })
-
-            $rootScope.$on('event:heartbeat', function (event, args) {
-                // manually init draggable adaptive layout
-                if ($.fn.packery && window.Draggabilly && !window.isMobile()) {
-                    $timeout(function () {
-                        $layout.packery()
-                    })
+            $scope.$on('dashboard.updated', function (evt, args) {
+                if (args.rows && args.rows.length > 0) {
+                    // persist the row/panel orientation to localStorage or cookies
+                    if (window.localStorage) localStorage.setItem('dashboard.rows', JSON.stringify(args.rows))
+                    else $cookieStore.put('dashboard-rows', JSON.stringify(args.rows))
                 }
             })
+
             $rootScope.$watch('refreshRate', function (rate) {
                 if (rate && rate == 'null') {
                     $rootScope.$broadcast('event:heartbeatDisabled')
@@ -80,31 +38,51 @@ angular.module('myVillages.tasker.app.heartbeat')
             })
 
             vm.dashboard = {
-                recent_activity: {
+                'recent-activity': {
                     selected_client: ''
                 },
-                estimates_requested: {
+                'estimates-requested': {
                     selected_client: ''
                 },
-                client_reminders: {
+                'client-reminders': {
                     selected_client: ''
                 },
-                tech_status_updates: {
+                'tech-status-updates': {
                     selected_client: ''
                 },
-                recent_messages: {
+                'recent-messages': {
                     selected_client: ''
-                },
-                rows: [
-                    {
-                        panels: [
-                            {
-                                id: 1,
-                                name: 'Recent activity'
-                            }
-                        ]
-                    }
-                ]
+                }
+            };
+
+            if (window.localStorage && localStorage.getItem('dashboard.rows')) {
+                $layout = JSON.parse(localStorage.getItem('dashboard.rows'))
+                vm.dashboard.rows = $layout
+            } else {
+                if ($cookieStore.get('dashboard-rows')) {
+                    // use cookie
+                    $layout = JSON.parse($cookieStore.get('dashboard-rows'))
+                } else {
+                    $layout = [{
+                        panels: [{
+                            name: 'Recent activity'
+                        },
+                        {
+                            name: 'Recent messages'
+                        },
+                        {
+                            name: 'Estimates requested'
+                        },
+                        {
+                            name: 'Client reminders'
+                        },
+                        {
+                            name: 'Technician status updates'
+                        }]
+                    }]
+                }
+                
+                vm.dashboard.rows = $layout
             }
 
             authService.getCurrentUser()
@@ -245,6 +223,23 @@ angular.module('myVillages.tasker.app.heartbeat')
                     if (data.response.status === 200 && data.title) {
                         toastr.success('Message successfully added to task titled "' + data.title + '"')
                     }
+                })
+            }
+
+            $scope.onDropComplete = function (data, row, panel, evt) {
+                var indexOfDropped = row.panels.indexOf(data)
+                var indexOfDestination = row.panels.indexOf(panel)
+                var elm = angular.element(evt.element)
+
+                $timeout(function () {
+                    // swap positions
+                    row.panels[indexOfDropped] = panel
+                    row.panels[indexOfDestination] = data
+
+                    // reset styling
+                    elm.removeClass('drag-enter')
+
+                    $scope.$broadcast('dashboard.updated', { rows: vm.dashboard.rows })
                 })
             }
             

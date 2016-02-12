@@ -2,3 +2,5 @@ build/
 dist/
 node_modules/
 tmp
+scripts.js
+scripts.min.js

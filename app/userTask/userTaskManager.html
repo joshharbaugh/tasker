@@ -553,17 +553,17 @@
                                                 <div ui-sortable="sortableListsOpts" ng-model="inboxGroupsList" class="sortable-lists" data-parent-group-row-id="0">
                                                     <ul class="list-group" ng-if="individualTasksList.open && userTaskGroup.TaskCount > 0" ng-repeat="userTaskGroup in inboxGroupsList track by userTaskGroup.RowId" style="margin-bottom: 0px;">
                                                         <li class="task-group" style="margin-bottom: 6px;" ng-show="userTaskGroup.TaskCount > 0" id="task-group-{{userTaskGroup.RowId}}">
-                                                            <div class="row title" ng-if="!userTaskGroup.IsFolder" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskGroup)" style="border:none; min-height: 90px; margin: 0; padding-left: 0">
+                                                            <div class="row title" ng-if="!userTaskGroup.IsFolder" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskGroup)" style="border:none; min-height: 90px; margin: 0; padding-left: 0" ng-drag="true" ng-drag-data="userTaskGroup">
                                                                 <div class="col-sm-12">
                                                                     <div class="row" style="border:none;">
                                                                         <div class="col-sm-12" style="min-height: 40px;">
-                                                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px; margin-left:16px;" ng-drag="true" ng-drag-data="userTaskGroup">
+                                                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px; margin-left:16px;">
                                                                                 <i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i>
                                                                             </div>
                                                                             <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
                                                                                 <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskGroup)" ng-model="userTaskGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskGroup)" />
                                                                             </div>
-                                                                            <div class="title-container pull-left" ng-cancel-drag>
+                                                                            <div class="title-container pull-left">
                                                                                 <div class="inner">
                                                                                     <a href="#" editable-text="userTaskGroup.Title" onbeforesave="updateUserTaskGroup(userTaskGroup, $data)" ng-cancel-drag e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{userTaskGroup.Title}}</strong></a>
                                                                                     <span ng-if="userTaskGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskGroup.ListClientDisplayName}}</span>
@@ -617,12 +617,12 @@
                                                                     </div>
                                                                     <ul ng-if="userTaskSubGroup.TaskCount > 0" class="list-group" ng-repeat="userTaskSubGroup in userTaskGroup.GroupSubGroups track by userTaskSubGroup.RowId" style="margin-bottom:0px;">
                                                                         <li class="task-group" style="margin-bottom: 0px;" ng-show="userTaskSubGroup.TaskCount > 0" id="task-group-{{userTaskSubGroup.RowId}}">
-                                                                            <div class="title" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskSubGroup)" style="border:none">
-                                                                                <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;" ng-drag="true" ng-drag-data="userTaskSubGroup"><i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i></div>
+                                                                            <div class="title" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskSubGroup)" style="border:none" ng-drag="true" ng-drag-data="userTaskSubGroup">
+                                                                                <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;"><i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i></div>
                                                                                 <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
                                                                                     <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskSubGroup)" ng-model="userTaskSubGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskSubGroup)" />
                                                                                 </div>
-                                                                                <div class="title-container" ng-cancel-drag>
+                                                                                <div class="title-container">
                                                                                     <div class="inner">
                                                                                         <a href="#" editable-text="userTaskSubGroup.Title" onbeforesave="updateUserTaskGroup(userTaskSubGroup, $data)" ng-cancel-drag e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{userTaskSubGroup.Title}}</strong></a>
                                                                                         <span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
@@ -720,7 +720,7 @@
                                             <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
                                                 <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskGroup)" ng-model="userTaskGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskGroup)" />
                                             </div>
-                                            <div class="title-container" ng-cancel-drag>
+                                            <div class="title-container">
                                                 <div class="inner">
                                                     <a href="#" editable-text="userTaskGroup.Title" onbeforesave="updateUserTaskGroup(userTaskGroup, $data)" ng-cancel-drag e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{userTaskGroup.Title}}</strong></a>
                                                     <span ng-if="userTaskGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskGroup.ListClientDisplayName}}</span>
@@ -758,17 +758,17 @@
                                                 <div ui-sortable="sortableListsOpts" ng-model="userTaskGroup.GroupSubGroups" class="sortable-lists" data-parent-group-row-id="{{userTaskGroup.RowId}}">
                                                     <ul ng-if="userTaskSubGroup.TaskCount > 0" class="list-group" ng-repeat="userTaskSubGroup in userTaskGroup.GroupSubGroups track by userTaskSubGroup.RowId" style="margin-bottom:0px;">
                                                         <li class="task-group" style="margin-bottom: 6px;" ng-show="userTaskSubGroup.TaskCount > 0" id="task-group-{{userTaskSubGroup.RowId}}">
-                                                            <div class="row title" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskSubGroup)" style="border:none; min-height: 90px; margin: 0; padding-left: 0">
+                                                            <div class="row title" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskSubGroup)" style="border:none; min-height: 90px; margin: 0; padding-left: 0" ng-drag="true" ng-drag-data="userTaskSubGroup">
                                                                 <div class="col-sm-12">
                                                                     <div class="row" style="border:none;">
                                                                         <div class="col-sm-12" style="min-height: 40px;">
-                                                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px; margin-left:16px;" ng-drag="true" ng-drag-data="userTaskSubGroup">
+                                                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px; margin-left:16px;">
                                                                                 <i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i>
                                                                             </div>
                                                                             <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
                                                                                 <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskSubGroup)" ng-model="userTaskSubGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskSubGroup)" />
                                                                             </div>
-                                                                            <div class="title-container" ng-cancel-drag>
+                                                                            <div class="title-container">
                                                                                 <div class="inner">
                                                                                     <a href="#" editable-text="userTaskSubGroup.Title" onbeforesave="updateUserTaskGroup(userTaskSubGroup, $data)" ng-cancel-drag e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{userTaskSubGroup.Title}}</strong></a>
                                                                                     <span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
@@ -849,7 +849,7 @@
 														<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
 															<input type="checkbox" ng-click="toggleSelectedTaskList(taskLists.selectedTasksList)" ng-model="taskLists.selectedTasksList.selectAllTasks" ng-show="isEligibleBulkTasks(taskLists.selectedTasksList)" />
 														</div>
-														<div class="title-container" ng-cancel-drag>
+														<div class="title-container">
 															<div class="inner">
                                                                 <a href="#" editable-text="taskLists.selectedTasksList.Title" onbeforesave="updateUserTaskGroup(taskLists.selectedTasksList, $data)" e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{taskLists.selectedTasksList.Title}}</strong></a>
 																<span ng-if="taskLists.selectedTasksList.IsProLinkedList" class="list-client-name">Client Name: {{taskLists.selectedTasksList.ListClientDisplayName}}</span>
@@ -891,66 +891,66 @@
 												</div>
 												<div ui-sortable="sortableListsOpts" ng-model="taskLists.selectedTasksList.GroupSubGroups" class="sortable-lists" data-parent-group-row-id="{{taskLists.selectedTasksList.RowId}}">
 													<ul ng-if="userTaskSubGroup.TaskCount > 0" class="list-group" ng-repeat="userTaskSubGroup in taskLists.selectedTasksList.GroupSubGroups track by userTaskSubGroup.RowId" style="margin-bottom: 0px;">
-														<li class="task-group" style="margin-bottom: 0px;" ng-show="userTaskSubGroup.TaskCount > 0" id="task-group-{{userTaskSubGroup.RowId}}">
-															<div class="row title" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskSubGroup)" style="border: none; min-height: 90px; margin: 0; padding-left: 0">
-																<div class="col-sm-12">
-																	<div class="row" style="border:none;">
-																		<div class="col-sm-12" style="min-height: 40px;">
-																			<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px; margin-left:16px;" ng-drag="true" ng-drag-data="userTaskSubGroup">
+                                                        <li class="task-group" style="margin-bottom: 0px;" ng-show="userTaskSubGroup.TaskCount > 0" id="task-group-{{userTaskSubGroup.RowId}}">
+                                                            <div class="row title" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskSubGroup)" style="border: none; min-height: 90px; margin: 0; padding-left: 0" ng-drag="true" ng-drag-data="userTaskSubGroup">
+                                                                <div class="col-sm-12">
+                                                                    <div class="row" style="border:none;">
+                                                                        <div class="col-sm-12" style="min-height: 40px;">
+                                                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px; margin-left:16px;">
                                                                                 <i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i>
-																			</div>
-																			<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
-																				<input type="checkbox" ng-click="toggleSelectedTaskList(userTaskSubGroup)" ng-model="userTaskSubGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskSubGroup)" />
-																			</div>
-																			<div class="title-container" ng-cancel-drag>
-																				<div class="inner">
+                                                                            </div>
+                                                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
+                                                                                <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskSubGroup)" ng-model="userTaskSubGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskSubGroup)" />
+                                                                            </div>
+                                                                            <div class="title-container">
+                                                                                <div class="inner">
                                                                                     <a href="#" editable-text="userTaskSubGroup.Title" onbeforesave="updateUserTaskGroup(userTaskSubGroup, $data)" ng-cancel-drag e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{userTaskSubGroup.Title}}</strong></a>
-																					<span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
-																					<span ng-if="userTaskSubGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskSubGroup.ListProDisplayName}}</span>
-																				</div>
-																			</div>
-																			<div class="pull-right" style="position: relative; top: 20px; margin-right: 0;">
+                                                                                    <span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
+                                                                                    <span ng-if="userTaskSubGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskSubGroup.ListProDisplayName}}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="pull-right" style="position: relative; top: 20px; margin-right: 0;">
                                                                                 <i class="glyphicon glyphicon-envelope" style="position: absolute; right: 160px;" ng-click="getListMessages(userTaskSubGroup)" ng-show="userTaskSubGroup.IsMessagesLinked" data-toggle="tooltip" data-placement="top" title="Messages"></i>
-																				<span style="font-size: 10px; position: absolute; right: 150px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskSubGroup.MessagesCount > 0}" ng-bind="userTaskSubGroup.MessagesCount" ng-if="userTaskSubGroup.MessagesCount > 0"></span>
-																				<tk-bulk-actions-menu task-list="userTaskSubGroup"></tk-bulk-actions-menu>
+                                                                                <span style="font-size: 10px; position: absolute; right: 150px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskSubGroup.MessagesCount > 0}" ng-bind="userTaskSubGroup.MessagesCount" ng-if="userTaskSubGroup.MessagesCount > 0"></span>
+                                                                                <tk-bulk-actions-menu task-list="userTaskSubGroup"></tk-bulk-actions-menu>
                                                                                 <i class="glyphicon glyphicon-plus" style="position: absolute; right: 70px;" ng-click="addingTask[userTaskSubGroup.RowId]=!addingTask[userTaskSubGroup.RowId];setFocus(userTaskSubGroup.RowId)" data-toggle="tooltip" data-placement="top" title="Add task to group"></i>
-																				<span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskSubGroup.TaskCount"></span>
+                                                                                <span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskSubGroup.TaskCount"></span>
                                                                                 <i style="position: absolute; right: 10px;" class="pull-right glyphicon toggle-btn" ng-class="{'glyphicon-chevron-down': userTaskSubGroup.open, 'glyphicon-chevron-right': !userTaskSubGroup.open}" data-toggle="collapse" data-target="#collapse{{userTaskSubGroup.RowId}}" ng-click="toggleUserTaskGroup(userTaskSubGroup)" title="Click to expand / collapse"></i>
-																				<div ng-show="userTaskSubGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
-																					<i class="glyphicon glyphicon-remove-circle" ng-click="userTaskSubGroup.isMessagesOpen = !userTaskSubGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
-																					<tk-user-task-messages parent-row-id="userTaskSubGroup.RowId" parent-type="2"></tk-user-task-messages>
-																				</div>
+                                                                                <div ng-show="userTaskSubGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
+                                                                                    <i class="glyphicon glyphicon-remove-circle" ng-click="userTaskSubGroup.isMessagesOpen = !userTaskSubGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
+                                                                                    <tk-user-task-messages parent-row-id="userTaskSubGroup.RowId" parent-type="2"></tk-user-task-messages>
+                                                                                </div>
                                                                                 <i style="right: 130px" class="glyphicon glyphicon-trash" ng-click="deleteUserTaskGroup(userTaskSubGroup, taskLists.selectedTasksList.GroupSubGroups)" data-toggle="tooltip" data-placement="top" title="Delete list"></i>
-																			</div>
-																		</div>
-																	</div>
-																	<div class="row" style="border:none;">
-																		<div class="col-sm-12">
-																			<div class="list-ratings" ng-cancel-drag>
-																				<a href="javascript:;" style="display: inline!important;overflow: visible!important;" ng-cancel-drag ng-click="clearTaskGroupRating(userTaskSubGroup)">
-																					<span class="glyphicon glyphicon-remove"></span>
-																				</a>
-																				<rating id="listRatings" ng-cancel-drag ng-model="userTaskSubGroup.Rating" ng-click="updateTaskGroupRating(userTaskSubGroup)" max="max" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</div>
-															<div ng-if="addingTask[userTaskSubGroup.RowId]">
-																<tk-create-task method="newUserTaskFromTaskListAdded(newUserTask, userTaskSubGroup)" style="position:relative;"></tk-create-task>
-															</div>
-															<tk-assign-list-tasks task-list="userTaskSubGroup" user-toys="userToys"></tk-assign-list-tasks>
-															<tk-reassign-supervisor task-list="userTaskSubGroup"></tk-reassign-supervisor>
-															<tk-assign-service-tech task-list="userTaskSubGroup"></tk-assign-service-tech>
-															<tk-assign-subcontractor task-list="userTaskSubGroup"></tk-assign-subcontractor>
-															<div class="panel-collapse" ng-class="{'collapse': !userTaskSubGroup.open}" id="collapse{{userTaskSubGroup.RowId}}">
-																<div ui-sortable="sortableTasksOpts" ng-model="userTaskSubGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskSubGroup.RowId}}">
-																	<div class="panel" ng-repeat="userTask in userTaskSubGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading" ng-class="{'first': $first}">
-																		<div tk-user-task user-task="userTask" user-task-group="userTaskSubGroup"></div>
-																	</div>
-																</div>
-															</div>
-														</li>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row" style="border:none;">
+                                                                        <div class="col-sm-12">
+                                                                            <div class="list-ratings" ng-cancel-drag>
+                                                                                <a href="javascript:;" style="display: inline!important;overflow: visible!important;" ng-cancel-drag ng-click="clearTaskGroupRating(userTaskSubGroup)">
+                                                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                                                </a>
+                                                                                <rating id="listRatings" ng-cancel-drag ng-model="userTaskSubGroup.Rating" ng-click="updateTaskGroupRating(userTaskSubGroup)" max="max" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <div ng-if="addingTask[userTaskSubGroup.RowId]">
+                                                                <tk-create-task method="newUserTaskFromTaskListAdded(newUserTask, userTaskSubGroup)" style="position:relative;"></tk-create-task>
+                                                            </div>
+                                                            <tk-assign-list-tasks task-list="userTaskSubGroup" user-toys="userToys"></tk-assign-list-tasks>
+                                                            <tk-reassign-supervisor task-list="userTaskSubGroup"></tk-reassign-supervisor>
+                                                            <tk-assign-service-tech task-list="userTaskSubGroup"></tk-assign-service-tech>
+                                                            <tk-assign-subcontractor task-list="userTaskSubGroup"></tk-assign-subcontractor>
+                                                            <div class="panel-collapse" ng-class="{'collapse': !userTaskSubGroup.open}" id="collapse{{userTaskSubGroup.RowId}}">
+                                                                <div ui-sortable="sortableTasksOpts" ng-model="userTaskSubGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskSubGroup.RowId}}">
+                                                                    <div class="panel" ng-repeat="userTask in userTaskSubGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading" ng-class="{'first': $first}">
+                                                                        <div tk-user-task user-task="userTask" user-task-group="userTaskSubGroup"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
 													</ul>
 												</div>
 												<div ui-sortable="sortableTasksOpts" ng-model="taskLists.selectedTasksList.GroupTasks" class="sortable-tasks" data-parent-row-id="{{taskLists.selectedTasksList.RowId}}">
@@ -1027,102 +1027,102 @@
 												</div>
 												<div ui-sortable="sortableListsOpts" ng-model="inboxGroupsList" class="sortable-lists" data-parent-group-row-id="0">
 													<ul class="list-group" ng-if="individualTasksList.open && userTaskGroup.TaskCount > 0" ng-repeat="userTaskGroup in inboxGroupsList track by userTaskGroup.RowId" style="margin-bottom: 0px;">
-														<li class="task-group" style="margin-bottom: 0px;" ng-show="userTaskGroup.TaskCount > 0" id="task-group-{{userTaskGroup.RowId}}">
-															<div class="title" ng-if="!userTaskGroup.IsFolder" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskGroup)" style="border:none">
-																<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;" ng-drag="true" ng-drag-data="userTaskGroup"><i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i></div>
-																<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
-																	<input type="checkbox" ng-click="toggleSelectedTaskList(userTaskGroup)" ng-model="userTaskGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskGroup)" />
-																</div>
-																<div class="title-container" ng-cancel-drag>
-																	<div class="inner">
+                                                        <li class="task-group" style="margin-bottom: 0px;" ng-show="userTaskGroup.TaskCount > 0" id="task-group-{{userTaskGroup.RowId}}">
+                                                            <div class="title" ng-if="!userTaskGroup.IsFolder" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskGroup)" style="border:none" ng-drag="true" ng-drag-data="userTaskGroup">
+                                                                <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;"><i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i></div>
+                                                                <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
+                                                                    <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskGroup)" ng-model="userTaskGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskGroup)" />
+                                                                </div>
+                                                                <div class="title-container">
+                                                                    <div class="inner">
                                                                         <a href="#" editable-text="userTaskGroup.Title" onbeforesave="updateUserTaskGroup(userTaskGroup, $data)" ng-cancel-drag e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{userTaskGroup.Title}}</strong></a>
-																		<span ng-if="userTaskGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskGroup.ListClientDisplayName}}</span>
-																		<span ng-if="userTaskGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskGroup.ListProDisplayName}}</span>
-																	</div>
-																</div>
-																<div class="pull-right" style="position: relative; top: 20px;">
+                                                                        <span ng-if="userTaskGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskGroup.ListClientDisplayName}}</span>
+                                                                        <span ng-if="userTaskGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskGroup.ListProDisplayName}}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="pull-right" style="position: relative; top: 20px;">
                                                                     <i class="glyphicon glyphicon-envelope" style="position: absolute; right: 160px;" ng-click="getListMessages(userTaskGroup)" ng-show="userTaskGroup.IsMessagesLinked" data-toggle="tooltip" data-placement="top" title="Messages"></i>
-																	<span style="font-size: 10px; position: absolute; right: 150px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskGroup.MessagesCount > 0}" ng-bind="userTaskGroup.MessagesCount" ng-if="userTaskGroup.MessagesCount > 0"></span>
-																	<tk-bulk-actions-menu task-list="userTaskGroup"></tk-bulk-actions-menu>
+                                                                    <span style="font-size: 10px; position: absolute; right: 150px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskGroup.MessagesCount > 0}" ng-bind="userTaskGroup.MessagesCount" ng-if="userTaskGroup.MessagesCount > 0"></span>
+                                                                    <tk-bulk-actions-menu task-list="userTaskGroup"></tk-bulk-actions-menu>
                                                                     <i class="glyphicon glyphicon-plus" style="position: absolute; right: 70px;" ng-click="addingTask[userTaskGroup.RowId]=!addingTask[userTaskGroup.RowId];setFocus(userTaskGroup.RowId)" data-toggle="tooltip" data-placement="top" title="Add task to group"></i>
-																	<span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskGroup.TaskCount"></span>
+                                                                    <span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskGroup.TaskCount"></span>
                                                                     <i style="position: absolute; right: 10px;" class="pull-right glyphicon toggle-btn" ng-class="{'glyphicon-chevron-down': userTaskGroup.open, 'glyphicon-chevron-right': !userTaskGroup.open}" data-toggle="collapse" data-target="#collapse{{userTaskGroup.RowId}}" ng-click="toggleUserTaskGroup(userTaskGroup)" title="Click to expand / collapse"></i>
-																	<div ng-show="userTaskGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
-																		<i class="glyphicon glyphicon-remove-circle" ng-click="userTaskGroup.isMessagesOpen = !userTaskGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
-																		<tk-user-task-messages parent-row-id="userTaskGroup.RowId" parent-type="2"></tk-user-task-messages>
-																	</div>
+                                                                    <div ng-show="userTaskGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
+                                                                        <i class="glyphicon glyphicon-remove-circle" ng-click="userTaskGroup.isMessagesOpen = !userTaskGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
+                                                                        <tk-user-task-messages parent-row-id="userTaskGroup.RowId" parent-type="2"></tk-user-task-messages>
+                                                                    </div>
                                                                     <i style="right: 130px;" class="glyphicon glyphicon-trash" ng-click="deleteUserTaskGroup(userTaskGroup, userTasksGroupsList)" data-toggle="tooltip" data-placement="top" title="Delete list"></i>
-																</div>
-															</div>
-															<div ng-if="addingTask[userTaskGroup.RowId]">
-																<tk-create-task method="newUserTaskFromTaskListAdded(newUserTask, userTaskGroup)" style="position:relative;"></tk-create-task>
-															</div>
-															<tk-assign-list-tasks task-list="userTaskGroup" user-toys="userToys"></tk-assign-list-tasks>
-															<tk-reassign-supervisor task-list="userTaskGroup"></tk-reassign-supervisor>
-															<tk-assign-service-tech task-list="userTaskGroup"></tk-assign-service-tech>
-															<tk-assign-subcontractor task-list="userTaskGroup"></tk-assign-subcontractor>
-															<div ng-if="userTaskGroup.open" ng-show="userTaskGroup.TaskCount > 0" class="panel-collapse" ng-class="{'collapse': !userTaskGroup.open}" id="collapse{{userTaskGroup.RowId}}">
-																<div class="panel-group" style="margin-bottom:0px;">
-																	<div class="loading" ng-show="taskLists.isLoading">
-																		<div class="progress progress-striped active" style="margin-bottom: 0px; height: 6px; border-radius: 0px;">
-																			<div class="progress-bar progress-bar-danger" role="progressbar" style="width: 100%;"></div>
-																		</div>
-																	</div>
-																	<div ui-sortable="sortableListsOpts" ng-model="userTaskGroup.GroupSubGroups" class="sortable-lists" data-parent-group-row-id="{{userTaskGroup.RowId}}" ng-if="userTaskGroup.GroupSubGroups && userTaskGroup.GroupSubGroups.length > 0">
-																		<ul ng-if="userTaskSubGroup.TaskCount > 0" class="list-group" ng-repeat="userTaskSubGroup in userTaskGroup.GroupSubGroups track by userTaskSubGroup.RowId" style="margin-bottom:0px;">
-																			<li class="task-group" style="margin-bottom: 0px;" ng-show="userTaskSubGroup.TaskCount > 0" id="task-group-{{userTaskSubGroup.RowId}}">
-																				<div class="title" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskSubGroup)" style="border:none">
-																					<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;" ng-drag="true" ng-drag-data="userTaskSubGroup"><i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i></div>
-																					<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
-																						<input type="checkbox" ng-click="toggleSelectedTaskList(userTaskSubGroup)" ng-model="userTaskSubGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskSubGroup)" />
-																					</div>
-																					<div class="title-container" ng-cancel-drag>
-																						<div class="inner">
+                                                                </div>
+                                                            </div>
+                                                            <div ng-if="addingTask[userTaskGroup.RowId]">
+                                                                <tk-create-task method="newUserTaskFromTaskListAdded(newUserTask, userTaskGroup)" style="position:relative;"></tk-create-task>
+                                                            </div>
+                                                            <tk-assign-list-tasks task-list="userTaskGroup" user-toys="userToys"></tk-assign-list-tasks>
+                                                            <tk-reassign-supervisor task-list="userTaskGroup"></tk-reassign-supervisor>
+                                                            <tk-assign-service-tech task-list="userTaskGroup"></tk-assign-service-tech>
+                                                            <tk-assign-subcontractor task-list="userTaskGroup"></tk-assign-subcontractor>
+                                                            <div ng-if="userTaskGroup.open" ng-show="userTaskGroup.TaskCount > 0" class="panel-collapse" ng-class="{'collapse': !userTaskGroup.open}" id="collapse{{userTaskGroup.RowId}}">
+                                                                <div class="panel-group" style="margin-bottom:0px;">
+                                                                    <div class="loading" ng-show="taskLists.isLoading">
+                                                                        <div class="progress progress-striped active" style="margin-bottom: 0px; height: 6px; border-radius: 0px;">
+                                                                            <div class="progress-bar progress-bar-danger" role="progressbar" style="width: 100%;"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div ui-sortable="sortableListsOpts" ng-model="userTaskGroup.GroupSubGroups" class="sortable-lists" data-parent-group-row-id="{{userTaskGroup.RowId}}" ng-if="userTaskGroup.GroupSubGroups && userTaskGroup.GroupSubGroups.length > 0">
+                                                                        <ul ng-if="userTaskSubGroup.TaskCount > 0" class="list-group" ng-repeat="userTaskSubGroup in userTaskGroup.GroupSubGroups track by userTaskSubGroup.RowId" style="margin-bottom:0px;">
+                                                                            <li class="task-group" style="margin-bottom: 0px;" ng-show="userTaskSubGroup.TaskCount > 0" id="task-group-{{userTaskSubGroup.RowId}}">
+                                                                                <div class="title" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskSubGroup)" style="border:none" ng-drag="true" ng-drag-data="userTaskSubGroup">
+                                                                                    <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;"><i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i></div>
+                                                                                    <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
+                                                                                        <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskSubGroup)" ng-model="userTaskSubGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskSubGroup)" />
+                                                                                    </div>
+                                                                                    <div class="title-container">
+                                                                                        <div class="inner">
                                                                                             <a href="#" editable-text="userTaskSubGroup.Title" onbeforesave="updateUserTaskGroup(userTaskSubGroup, $data)" ng-cancel-drag e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{userTaskSubGroup.Title}}</strong></a>
-																							<span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
-																							<span ng-if="userTaskSubGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskSubGroup.ListProDisplayName}}</span>
-																						</div>
-																					</div>
-																					<div class="pull-right" style="position: relative; top: 20px;">
+                                                                                            <span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
+                                                                                            <span ng-if="userTaskSubGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskSubGroup.ListProDisplayName}}</span>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                    <div class="pull-right" style="position: relative; top: 20px;">
                                                                                         <i class="glyphicon glyphicon-envelope" style="position: absolute; right: 160px;" ng-click="getListMessages(userTaskSubGroup)" ng-show="userTaskSubGroup.IsMessagesLinked" data-toggle="tooltip" data-placement="top" title="Messages"></i>
-																						<span style="font-size: 10px; position: absolute; right: 150px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskSubGroup.MessagesCount > 0}" ng-bind="userTaskSubGroup.MessagesCount" ng-if="userTaskSubGroup.MessagesCount > 0"></span>
-																						<tk-bulk-actions-menu task-list="userTaskSubGroup"></tk-bulk-actions-menu>
+                                                                                        <span style="font-size: 10px; position: absolute; right: 150px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskSubGroup.MessagesCount > 0}" ng-bind="userTaskSubGroup.MessagesCount" ng-if="userTaskSubGroup.MessagesCount > 0"></span>
+                                                                                        <tk-bulk-actions-menu task-list="userTaskSubGroup"></tk-bulk-actions-menu>
                                                                                         <i class="glyphicon glyphicon-plus" style="position: absolute; right: 70px;" ng-click="addingTask[userTaskSubGroup.RowId]=!addingTask[userTaskSubGroup.RowId];setFocus(userTaskSubGroup.RowId)" data-toggle="tooltip" data-placement="top" title="Add task to group"></i>
-																						<span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskSubGroup.TaskCount"></span>
+                                                                                        <span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskSubGroup.TaskCount"></span>
                                                                                         <i style="position: absolute; right: 10px;" class="pull-right glyphicon toggle-btn" ng-class="{'glyphicon-chevron-down': userTaskSubGroup.open, 'glyphicon-chevron-right': !userTaskSubGroup.open}" data-toggle="collapse" data-target="#collapse{{userTaskSubGroup.RowId}}" ng-click="toggleUserTaskGroup(userTaskSubGroup)" title="Click to expand / collapse"></i>
-																						<div ng-show="userTaskSubGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
-																							<i class="glyphicon glyphicon-remove-circle" ng-click="userTaskSubGroup.isMessagesOpen = !userTaskSubGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
-																							<tk-user-task-messages parent-row-id="userTaskSubGroup.RowId" parent-type="2"></tk-user-task-messages>
-																						</div>
+                                                                                        <div ng-show="userTaskSubGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
+                                                                                            <i class="glyphicon glyphicon-remove-circle" ng-click="userTaskSubGroup.isMessagesOpen = !userTaskSubGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
+                                                                                            <tk-user-task-messages parent-row-id="userTaskSubGroup.RowId" parent-type="2"></tk-user-task-messages>
+                                                                                        </div>
                                                                                         <i style="right: 130px;" class="glyphicon glyphicon-trash" ng-click="deleteUserTaskGroup(userTaskSubGroup, userTaskGroup.GroupSubGroups)" data-toggle="tooltip" data-placement="top" title="Delete list"></i>
-																					</div>
-																				</div>
-																				<div ng-if="addingTask[userTaskSubGroup.RowId]">
-																					<tk-create-task method="newUserTaskFromTaskListAdded(newUserTask, userTaskSubGroup)" style="position:relative;"></tk-create-task>
-																				</div>
-																				<tk-assign-list-tasks task-list="userTaskSubGroup" user-toys="userToys"></tk-assign-list-tasks>
-																				<tk-reassign-supervisor task-list="userTaskSubGroup"></tk-reassign-supervisor>
-																				<tk-assign-service-tech task-list="userTaskSubGroup"></tk-assign-service-tech>
-																				<tk-assign-subcontractor task-list="userTaskSubGroup"></tk-assign-subcontractor>
-																				<div class="panel-collapse" ng-class="{'collapse': !userTaskSubGroup.open}" id="collapse{{userTaskSubGroup.RowId}}">
-																					<div ui-sortable="sortableTasksOpts" ng-model="userTaskSubGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskSubGroup.RowId}}">
-																						<div ng-if="userTaskSubGroup.open" class="panel" ng-repeat="userTask in userTaskSubGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading">
-																							<div tk-user-task user-task="userTask" user-task-group="userTaskSubGroup"></div>
-																						</div>
-																					</div>
-																				</div>
-																			</li>
-																		</ul>
-																	</div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                <div ng-if="addingTask[userTaskSubGroup.RowId]">
+                                                                                    <tk-create-task method="newUserTaskFromTaskListAdded(newUserTask, userTaskSubGroup)" style="position:relative;"></tk-create-task>
+                                                                                </div>
+                                                                                <tk-assign-list-tasks task-list="userTaskSubGroup" user-toys="userToys"></tk-assign-list-tasks>
+                                                                                <tk-reassign-supervisor task-list="userTaskSubGroup"></tk-reassign-supervisor>
+                                                                                <tk-assign-service-tech task-list="userTaskSubGroup"></tk-assign-service-tech>
+                                                                                <tk-assign-subcontractor task-list="userTaskSubGroup"></tk-assign-subcontractor>
+                                                                                <div class="panel-collapse" ng-class="{'collapse': !userTaskSubGroup.open}" id="collapse{{userTaskSubGroup.RowId}}">
+                                                                                    <div ui-sortable="sortableTasksOpts" ng-model="userTaskSubGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskSubGroup.RowId}}">
+                                                                                        <div ng-if="userTaskSubGroup.open" class="panel" ng-repeat="userTask in userTaskSubGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading">
+                                                                                            <div tk-user-task user-task="userTask" user-task-group="userTaskSubGroup"></div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </li>
+                                                                        </ul>
+                                                                    </div>
 
-																	<div ui-sortable="sortableTasksOpts" ng-model="userTaskGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskGroup.RowId}}">
-																		<div class="panel" ng-repeat="userTask in userTaskGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading">
-																			<div tk-user-task user-task="userTask" user-task-group="userTaskGroup"></div>
-																		</div>
-																	</div>
-																</div>
-															</div>
-														</li>
+                                                                    <div ui-sortable="sortableTasksOpts" ng-model="userTaskGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskGroup.RowId}}">
+                                                                        <div class="panel" ng-repeat="userTask in userTaskGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading">
+                                                                            <div tk-user-task user-task="userTask" user-task-group="userTaskGroup"></div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
 													</ul>
 												</div>
 
@@ -1170,126 +1170,126 @@
 							<!-- groups -->
 							<div class="tasks" ng-hide="activePrimaryInbox || otherSupervisors.isOtherSupervisorsQueue">
 								<ul ng-if="userTaskGroup.TaskCount > 0" class="list-group" ng-repeat="userTaskGroup in userTasksGroupsList | filter:{IsFolder: true} track by userTaskGroup.RowId">
-									<li class="task-group" ng-show="userTaskGroup.TaskCount > 0" id="task-group-{{userTaskGroup.RowId}}">
-										<div class="title" ng-if="userTaskGroup.IsFolder" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskGroup)" style="border:none">
-											<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;"><i class="glyphicon glyphicon-folder-open" style="position:relative;"></i></div>
-											<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
-												<input type="checkbox" ng-click="toggleSelectedTaskList(userTaskGroup)" ng-model="userTaskGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskGroup)" />
-											</div>
-											<div class="title-container" ng-cancel-drag>
-												<div class="inner">
+                                    <li class="task-group" ng-show="userTaskGroup.TaskCount > 0" id="task-group-{{userTaskGroup.RowId}}">
+                                        <div class="title" ng-if="userTaskGroup.IsFolder" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskGroup)" style="border:none">
+                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;"><i class="glyphicon glyphicon-folder-open" style="position:relative;"></i></div>
+                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
+                                                <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskGroup)" ng-model="userTaskGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskGroup)" />
+                                            </div>
+                                            <div class="title-container">
+                                                <div class="inner">
                                                     <a href="#" editable-text="userTaskGroup.Title" onbeforesave="updateUserTaskGroup(userTaskGroup, $data)" ng-cancel-drag e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{userTaskGroup.Title}}</strong></a>
-													<span ng-if="userTaskGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskGroup.ListClientDisplayName}}</span>
-													<span ng-if="userTaskGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskGroup.ListProDisplayName}}</span>
-												</div>
-											</div>
-											<div class="pull-right" style="position: relative; top: 20px;">
+                                                    <span ng-if="userTaskGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskGroup.ListClientDisplayName}}</span>
+                                                    <span ng-if="userTaskGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskGroup.ListProDisplayName}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="pull-right" style="position: relative; top: 20px;">
                                                 <i class="glyphicon glyphicon-envelope" style="position: absolute; right: 130px;" ng-click="getListMessages(userTaskGroup)" ng-show="userTaskGroup.IsMessagesLinked" data-toggle="tooltip" data-placement="top" title="Messages"></i>
-												<span style="font-size: 10px; position: absolute; right: 120px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskGroup.MessagesCount > 0}" ng-bind="userTaskGroup.MessagesCount" ng-if="userTaskGroup.MessagesCount > 0"></span>
-												<tk-bulk-actions-menu task-list="userTaskGroup"></tk-bulk-actions-menu>
+                                                <span style="font-size: 10px; position: absolute; right: 120px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskGroup.MessagesCount > 0}" ng-bind="userTaskGroup.MessagesCount" ng-if="userTaskGroup.MessagesCount > 0"></span>
+                                                <tk-bulk-actions-menu task-list="userTaskGroup"></tk-bulk-actions-menu>
                                                 <i class="glyphicon glyphicon-plus" style="position: absolute; right: 70px;" ng-click="addingTask[userTaskGroup.RowId]=!addingTask[userTaskGroup.RowId];setFocus(userTaskGroup.RowId)" data-toggle="tooltip" data-placement="top" title="Add task to group"></i>
-												<span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskGroup.TaskCount"></span>
+                                                <span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskGroup.TaskCount"></span>
                                                 <i style="position: absolute; right: 10px;" class="pull-right glyphicon toggle-btn" ng-class="{'glyphicon-chevron-down': userTaskGroup.open, 'glyphicon-chevron-right': !userTaskGroup.open}" data-toggle="collapse" data-target="#collapse{{userTaskGroup.RowId}}" ng-click="toggleUserTaskGroup(userTaskGroup, true)" title="Click to expand / collapse"></i>
-												<div ng-show="userTaskGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
-													<i class="glyphicon glyphicon-remove-circle" ng-click="userTaskGroup.isMessagesOpen = !userTaskGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
-													<tk-user-task-messages parent-row-id="userTaskGroup.RowId" parent-type="2"></tk-user-task-messages>
-												</div>
-											</div>
-										</div>
-										<div class="title" ng-if="!userTaskGroup.IsFolder" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskGroup)" style="border:none">
-											<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;" ng-drag="true" ng-drag-data="userTaskGroup"><i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i></div>
-											<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
-												<input type="checkbox" ng-click="toggleSelectedTaskList(userTaskGroup)" ng-model="userTaskGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskGroup)" />
-											</div>
-											<div class="title-container" ng-cancel-drag>
-												<div class="inner">
+                                                <div ng-show="userTaskGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
+                                                    <i class="glyphicon glyphicon-remove-circle" ng-click="userTaskGroup.isMessagesOpen = !userTaskGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
+                                                    <tk-user-task-messages parent-row-id="userTaskGroup.RowId" parent-type="2"></tk-user-task-messages>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="title" ng-if="!userTaskGroup.IsFolder" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskGroup)" style="border:none" ng-drag="true" ng-drag-data="userTaskGroup">
+                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;"><i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i></div>
+                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
+                                                <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskGroup)" ng-model="userTaskGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskGroup)" />
+                                            </div>
+                                            <div class="title-container">
+                                                <div class="inner">
                                                     <a href="#" editable-text="userTaskGroup.Title" onbeforesave="updateUserTaskGroup(userTaskGroup, $data)" ng-cancel-drag e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{userTaskGroup.Title}}</strong></a>
-													<span ng-if="userTaskGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskGroup.ListClientDisplayName}}</span>
-													<span ng-if="userTaskGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskGroup.ListProDisplayName}}</span>
-												</div>
-											</div>
-											<div class="pull-right" style="position: relative; top: 20px;">
+                                                    <span ng-if="userTaskGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskGroup.ListClientDisplayName}}</span>
+                                                    <span ng-if="userTaskGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskGroup.ListProDisplayName}}</span>
+                                                </div>
+                                            </div>
+                                            <div class="pull-right" style="position: relative; top: 20px;">
                                                 <i class="glyphicon glyphicon-envelope" style="position: absolute; right: 160px;" ng-click="getListMessages(userTaskGroup)" ng-show="userTaskGroup.IsMessagesLinked" data-toggle="tooltip" data-placement="top" title="Messages"></i>
-												<span style="font-size: 10px; position: absolute; right: 150px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskGroup.MessagesCount > 0}" ng-bind="userTaskGroup.MessagesCount" ng-if="userTaskGroup.MessagesCount > 0"></span>
-												<tk-bulk-actions-menu task-list="userTaskGroup"></tk-bulk-actions-menu>
+                                                <span style="font-size: 10px; position: absolute; right: 150px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskGroup.MessagesCount > 0}" ng-bind="userTaskGroup.MessagesCount" ng-if="userTaskGroup.MessagesCount > 0"></span>
+                                                <tk-bulk-actions-menu task-list="userTaskGroup"></tk-bulk-actions-menu>
                                                 <i class="glyphicon glyphicon-plus" style="position: absolute; right: 70px;" ng-click="addingTask[userTaskGroup.RowId]=!addingTask[userTaskGroup.RowId];setFocus(userTaskGroup.RowId)" data-toggle="tooltip" data-placement="top" title="Add task to group"></i>
-												<span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskGroup.TaskCount"></span>
+                                                <span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskGroup.TaskCount"></span>
                                                 <i style="position: absolute; right: 10px;" class="pull-right glyphicon toggle-btn" ng-class="{'glyphicon-chevron-down': userTaskGroup.open, 'glyphicon-chevron-right': !userTaskGroup.open}" data-toggle="collapse" data-target="#collapse{{userTaskGroup.RowId}}" ng-click="toggleUserTaskGroup(userTaskGroup)" title="Click to expand / collapse"></i>
-												<div ng-show="userTaskGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
-													<i class="glyphicon glyphicon-remove-circle" ng-click="userTaskGroup.isMessagesOpen = !userTaskGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
-													<tk-user-task-messages parent-row-id="userTaskGroup.RowId" parent-type="2"></tk-user-task-messages>
-												</div>
+                                                <div ng-show="userTaskGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
+                                                    <i class="glyphicon glyphicon-remove-circle" ng-click="userTaskGroup.isMessagesOpen = !userTaskGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
+                                                    <tk-user-task-messages parent-row-id="userTaskGroup.RowId" parent-type="2"></tk-user-task-messages>
+                                                </div>
                                                 <i style="right: 130px;" class="glyphicon glyphicon-trash" ng-click="deleteUserTaskGroup(userTaskGroup, userTasksGroupsList)" data-toggle="tooltip" data-placement="top" title="Delete list"></i>
-											</div>
-										</div>
-										<div ng-if="addingTask[userTaskGroup.RowId]">
-											<tk-create-task method="newUserTaskFromTaskListAdded(newUserTask, userTaskGroup)" style="position:relative;"></tk-create-task>
-										</div>
-										<tk-assign-list-tasks task-list="userTaskGroup" user-toys="userToys"></tk-assign-list-tasks>
-										<tk-reassign-supervisor task-list="userTaskGroup"></tk-reassign-supervisor>
-										<tk-assign-service-tech task-list="userTaskGroup"></tk-assign-service-tech>
-										<tk-assign-subcontractor task-list="userTaskGroup"></tk-assign-subcontractor>
-										<div ng-if="userTaskGroup.open" class="panel-collapse" ng-class="{'collapse': !userTaskGroup.open}" id="collapse{{userTaskGroup.RowId}}">
-											<div class="panel-group" style="margin-bottom:0px;">
-												<div class="loading" ng-show="taskLists.isLoading">
-													<div class="progress progress-striped active" style="margin-bottom: 0px; height: 6px; border-radius: 0px;">
-														<div class="progress-bar progress-bar-danger" role="progressbar" style="width: 100%;"></div>
-													</div>
-												</div>
-												<div ui-sortable="sortableListsOpts" ng-model="userTaskGroup.GroupSubGroups" class="sortable-lists" data-parent-group-row-id="{{userTaskGroup.RowId}}">
-													<ul ng-if="userTaskSubGroup.TaskCount > 0" class="list-group" ng-repeat="userTaskSubGroup in userTaskGroup.GroupSubGroups track by userTaskSubGroup.RowId" style="margin-bottom:0px;">
-														<li class="task-group" style="margin-bottom: 0px;" ng-show="userTaskSubGroup.TaskCount > 0" id="task-group-{{userTaskSubGroup.RowId}}">
-															<div class="title" ng-if="!userTaskSubGroup.IsFolder" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskSubGroup)" style="border:none">
-																<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;" ng-drag="true" ng-drag-data="userTaskSubGroup"><i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i></div>
-																<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
-																	<input type="checkbox" ng-click="toggleSelectedTaskList(userTaskSubGroup)" ng-model="userTaskSubGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskSubGroup)" />
-																</div>
-																<div class="title-container" ng-cancel-drag>
-																	<div class="inner">
+                                            </div>
+                                        </div>
+                                        <div ng-if="addingTask[userTaskGroup.RowId]">
+                                            <tk-create-task method="newUserTaskFromTaskListAdded(newUserTask, userTaskGroup)" style="position:relative;"></tk-create-task>
+                                        </div>
+                                        <tk-assign-list-tasks task-list="userTaskGroup" user-toys="userToys"></tk-assign-list-tasks>
+                                        <tk-reassign-supervisor task-list="userTaskGroup"></tk-reassign-supervisor>
+                                        <tk-assign-service-tech task-list="userTaskGroup"></tk-assign-service-tech>
+                                        <tk-assign-subcontractor task-list="userTaskGroup"></tk-assign-subcontractor>
+                                        <div ng-if="userTaskGroup.open" class="panel-collapse" ng-class="{'collapse': !userTaskGroup.open}" id="collapse{{userTaskGroup.RowId}}">
+                                            <div class="panel-group" style="margin-bottom:0px;">
+                                                <div class="loading" ng-show="taskLists.isLoading">
+                                                    <div class="progress progress-striped active" style="margin-bottom: 0px; height: 6px; border-radius: 0px;">
+                                                        <div class="progress-bar progress-bar-danger" role="progressbar" style="width: 100%;"></div>
+                                                    </div>
+                                                </div>
+                                                <div ui-sortable="sortableListsOpts" ng-model="userTaskGroup.GroupSubGroups" class="sortable-lists" data-parent-group-row-id="{{userTaskGroup.RowId}}">
+                                                    <ul ng-if="userTaskSubGroup.TaskCount > 0" class="list-group" ng-repeat="userTaskSubGroup in userTaskGroup.GroupSubGroups track by userTaskSubGroup.RowId" style="margin-bottom:0px;">
+                                                        <li class="task-group" style="margin-bottom: 0px;" ng-show="userTaskSubGroup.TaskCount > 0" id="task-group-{{userTaskSubGroup.RowId}}">
+                                                            <div class="title" ng-if="!userTaskSubGroup.IsFolder" ng-drop="true" ng-drop-success="onDropComplete($data, userTaskSubGroup)" style="border:none" ng-drag="true" ng-drag-data="userTaskSubGroup">
+                                                                <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;"><i class="glyphicon glyphicon-list" style="position:relative;cursor:move" data-toggle="tooltip" data-placement="top" title="Click and drag to reorder"></i></div>
+                                                                <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
+                                                                    <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskSubGroup)" ng-model="userTaskSubGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskSubGroup)" />
+                                                                </div>
+                                                                <div class="title-container">
+                                                                    <div class="inner">
                                                                         <a href="#" editable-text="userTaskSubGroup.Title" onbeforesave="updateUserTaskGroup(userTaskSubGroup, $data)" ng-cancel-drag e-maxlength="59" data-toggle="tooltip" data-placement="left" title="Click to edit title"><strong>{{userTaskSubGroup.Title}}</strong></a>
-																		<span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
-																		<span ng-if="userTaskSubGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskSubGroup.ListProDisplayName}}</span>
-																	</div>
-																</div>
-																<div class="pull-right" style="position: relative; top: 20px;">
+                                                                        <span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
+                                                                        <span ng-if="userTaskSubGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskSubGroup.ListProDisplayName}}</span>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="pull-right" style="position: relative; top: 20px;">
                                                                     <i class="glyphicon glyphicon-envelope" style="position: absolute; right: 160px;" ng-click="getListMessages(userTaskSubGroup)" ng-show="userTaskSubGroup.IsMessagesLinked" data-toggle="tooltip" data-placement="top" title="Messages"></i>
-																	<span style="font-size: 10px; position: absolute; right: 150px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskSubGroup.MessagesCount > 0}" ng-bind="userTaskSubGroup.MessagesCount" ng-if="userTaskSubGroup.MessagesCount > 0"></span>
-																	<tk-bulk-actions-menu task-list="userTaskSubGroup"></tk-bulk-actions-menu>
+                                                                    <span style="font-size: 10px; position: absolute; right: 150px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskSubGroup.MessagesCount > 0}" ng-bind="userTaskSubGroup.MessagesCount" ng-if="userTaskSubGroup.MessagesCount > 0"></span>
+                                                                    <tk-bulk-actions-menu task-list="userTaskSubGroup"></tk-bulk-actions-menu>
                                                                     <i class="glyphicon glyphicon-plus" style="position: absolute; right: 70px;" ng-click="addingTask[userTaskSubGroup.RowId]=!addingTask[userTaskSubGroup.RowId]" data-toggle="tooltip" data-placement="top" title="Add task to group"></i>
-																	<span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskSubGroup.TaskCount"></span>
+                                                                    <span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskSubGroup.TaskCount"></span>
                                                                     <i style="position: absolute; right: 10px;" class="pull-right glyphicon toggle-btn" ng-class="{'glyphicon-chevron-down': userTaskSubGroup.open, 'glyphicon-chevron-right': !userTaskSubGroup.open}" data-toggle="collapse" data-target="#collapse{{userTaskSubGroup.RowId}}" ng-click="toggleUserTaskGroup(userTaskSubGroup)" title="Click to expand / collapse"></i>
-																	<div ng-show="userTaskSubGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
-																		<i class="glyphicon glyphicon-remove-circle" ng-click="userTaskSubGroup.isMessagesOpen = !userTaskSubGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
-																		<tk-user-task-messages parent-row-id="userTaskSubGroup.RowId" parent-type="2"></tk-user-task-messages>
-																	</div>
+                                                                    <div ng-show="userTaskSubGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
+                                                                        <i class="glyphicon glyphicon-remove-circle" ng-click="userTaskSubGroup.isMessagesOpen = !userTaskSubGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
+                                                                        <tk-user-task-messages parent-row-id="userTaskSubGroup.RowId" parent-type="2"></tk-user-task-messages>
+                                                                    </div>
                                                                     <i style="right: 130px;" class="glyphicon glyphicon-trash" ng-click="deleteUserTaskGroup(userTaskSubGroup, userTaskGroup.GroupSubGroups)" data-toggle="tooltip" data-placement="top" title="Delete list"></i>
-																</div>
-															</div>
-															<div ng-if="addingTask[userTaskSubGroup.RowId]">
-																<tk-create-task method="newUserTaskFromTaskListAdded(newUserTask, userTaskSubGroup)" style="position:relative;"></tk-create-task>
-															</div>
-															<tk-assign-list-tasks task-list="userTaskSubGroup" user-toys="userToys"></tk-assign-list-tasks>
-															<tk-reassign-supervisor task-list="userTaskSubGroup"></tk-reassign-supervisor>
-															<tk-assign-service-tech task-list="userTaskSubGroup"></tk-assign-service-tech>
-															<tk-assign-subcontractor task-list="userTaskSubGroup"></tk-assign-subcontractor>
-															<div class="panel-collapse" ng-class="{'collapse': !userTaskSubGroup.open}" id="collapse{{userTaskSubGroup.RowId}}">
-																<div ui-sortable="sortableTasksOpts" ng-model="userTaskSubGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskSubGroup.RowId}}">
-																	<div ng-if="userTaskSubGroup.open" class="panel" ng-repeat="userTask in userTaskSubGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading">
-																		<div tk-user-task user-task="userTask" user-task-group="userTaskSubGroup"></div>
-																	</div>
-																</div>
-															</div>
-														</li>
-													</ul>
-												</div>
-												<div ui-sortable="sortableTasksOpts" ng-model="userTaskGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskGroup.RowId}}">
-													<div class="panel" ng-repeat="userTask in userTaskGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading">
-														<div tk-user-task user-task="userTask" user-task-group="userTaskGroup"></div>
-													</div>
-												</div>
-											</div>
-										</div>
-									</li>
+                                                                </div>
+                                                            </div>
+                                                            <div ng-if="addingTask[userTaskSubGroup.RowId]">
+                                                                <tk-create-task method="newUserTaskFromTaskListAdded(newUserTask, userTaskSubGroup)" style="position:relative;"></tk-create-task>
+                                                            </div>
+                                                            <tk-assign-list-tasks task-list="userTaskSubGroup" user-toys="userToys"></tk-assign-list-tasks>
+                                                            <tk-reassign-supervisor task-list="userTaskSubGroup"></tk-reassign-supervisor>
+                                                            <tk-assign-service-tech task-list="userTaskSubGroup"></tk-assign-service-tech>
+                                                            <tk-assign-subcontractor task-list="userTaskSubGroup"></tk-assign-subcontractor>
+                                                            <div class="panel-collapse" ng-class="{'collapse': !userTaskSubGroup.open}" id="collapse{{userTaskSubGroup.RowId}}">
+                                                                <div ui-sortable="sortableTasksOpts" ng-model="userTaskSubGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskSubGroup.RowId}}">
+                                                                    <div ng-if="userTaskSubGroup.open" class="panel" ng-repeat="userTask in userTaskSubGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading">
+                                                                        <div tk-user-task user-task="userTask" user-task-group="userTaskSubGroup"></div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </li>
+                                                    </ul>
+                                                </div>
+                                                <div ui-sortable="sortableTasksOpts" ng-model="userTaskGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskGroup.RowId}}">
+                                                    <div class="panel" ng-repeat="userTask in userTaskGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading">
+                                                        <div tk-user-task user-task="userTask" user-task-group="userTaskGroup"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </li>
 								</ul>
 							</div>
 
@@ -1339,48 +1339,48 @@
 													</div>
 													<ul class="list-group" ng-repeat="userTaskSubGroup in userTaskGroup.GroupSubGroups track by userTaskSubGroup.RowId" style="margin-bottom:0px;">
 														<li class="task-group" style="margin-bottom: 6px;" ng-show="userTaskSubGroup.TaskCount > 0" id="task-group-{{userTaskSubGroup.RowId}}">
-															<div class="row title" style="border: none; min-height: 90px; margin: 0; padding-left: 0">
-																<div class="col-sm-12">
-																	<div class="row" style="border:none;">
-																		<div class="col-sm-12" style="height: 45px;">
-																			<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px; margin-left: 16px;" ng-drag="true" ng-drag-data="userTaskSubGroup">
-																				<i class="glyphicon glyphicon-list" style="position: relative;"></i>
-																			</div>
-																			<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
-																				<input type="checkbox" ng-click="toggleSelectedTaskList(userTaskSubGroup)" ng-model="userTaskSubGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskSubGroup)" />
-																			</div>
-																			<div class="title-container">
-																				<div class="inner">
-																					<a style="cursor: default; text-decoration: none;"><strong>{{userTaskSubGroup.Title}}</strong></a>
-																					<span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
-																					<span ng-if="userTaskSubGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskSubGroup.ListProDisplayName}}</span>
-																				</div>
-																			</div>
-																			<div class="pull-right" style="position: relative; top: 20px;">
+                                                            <div class="row title" style="border: none; min-height: 90px; margin: 0; padding-left: 0" ng-drag="true" ng-drag-data="userTaskSubGroup">
+                                                                <div class="col-sm-12">
+                                                                    <div class="row" style="border:none;">
+                                                                        <div class="col-sm-12" style="height: 45px;">
+                                                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px; margin-left: 16px;">
+                                                                                <i class="glyphicon glyphicon-list" style="position: relative;"></i>
+                                                                            </div>
+                                                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 5px;">
+                                                                                <input type="checkbox" ng-click="toggleSelectedTaskList(userTaskSubGroup)" ng-model="userTaskSubGroup.selectAllTasks" ng-show="isEligibleBulkTasks(userTaskSubGroup)" />
+                                                                            </div>
+                                                                            <div class="title-container">
+                                                                                <div class="inner">
+                                                                                    <a style="cursor: default; text-decoration: none;"><strong>{{userTaskSubGroup.Title}}</strong></a>
+                                                                                    <span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
+                                                                                    <span ng-if="userTaskSubGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskSubGroup.ListProDisplayName}}</span>
+                                                                                </div>
+                                                                            </div>
+                                                                            <div class="pull-right" style="position: relative; top: 20px;">
                                                                                 <i class="glyphicon glyphicon-envelope" style="position: absolute; right: 72px; top: 2px;" ng-click="getListMessages(userTaskSubGroup)" ng-show="userTaskSubGroup.IsMessagesLinked" data-toggle="tooltip" data-placement="top" title="Messages"></i>
-																				<tk-bulk-actions-menu task-list="userTaskSubGroup"></tk-bulk-actions-menu>
-																				<span style="font-size: 10px; position: absolute; right: 62px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskSubGroup.MessagesCount > 0}" ng-bind="userTaskSubGroup.MessagesCount" ng-show="userTaskSubGroup.IsMessagesLinked"></span>
-																				<span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskSubGroup.TaskCount"></span>
+                                                                                <tk-bulk-actions-menu task-list="userTaskSubGroup"></tk-bulk-actions-menu>
+                                                                                <span style="font-size: 10px; position: absolute; right: 62px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskSubGroup.MessagesCount > 0}" ng-bind="userTaskSubGroup.MessagesCount" ng-show="userTaskSubGroup.IsMessagesLinked"></span>
+                                                                                <span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskSubGroup.TaskCount"></span>
                                                                                 <i style="position: absolute; right: 10px;" class="pull-right glyphicon" ng-class="{'glyphicon-chevron-down': userTaskSubGroup.open, 'glyphicon-chevron-right': !userTaskSubGroup.open}" data-toggle="collapse" data-target="#collapse{{userTaskSubGroup.RowId}}" ng-click="userTaskSubGroup.open = !userTaskSubGroup.open" title="Click to expand / collapse"></i>
-																				<div ng-show="userTaskSubGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
-																					<i class="glyphicon glyphicon-remove-circle" ng-click="userTaskSubGroup.isMessagesOpen = !userTaskSubGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
-																					<tk-user-task-messages parent-row-id="userTaskSubGroup.RowId" parent-type="2"></tk-user-task-messages>
-																				</div>
-																			</div>
-																		</div>
-																	</div>
-																	<div class="row" style="border:none;">
-																		<div class="col-sm-12">
-																			<div class="list-ratings" ng-cancel-drag>
-																				<a href="javascript:;" style="display: inline!important;overflow: visible!important;" ng-cancel-drag ng-click="clearTaskGroupRating(userTaskSubGroup)">
-																					<span class="glyphicon glyphicon-remove"></span>
-																				</a>
-																				<rating id="listRatings" ng-cancel-drag ng-model="userTaskSubGroup.Rating" ng-click="updateTaskGroupRating(userTaskSubGroup)" max="max" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
-																			</div>
-																		</div>
-																	</div>
-																</div>
-															</div>
+                                                                                <div ng-show="userTaskSubGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
+                                                                                    <i class="glyphicon glyphicon-remove-circle" ng-click="userTaskSubGroup.isMessagesOpen = !userTaskSubGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
+                                                                                    <tk-user-task-messages parent-row-id="userTaskSubGroup.RowId" parent-type="2"></tk-user-task-messages>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                    <div class="row" style="border:none;">
+                                                                        <div class="col-sm-12">
+                                                                            <div class="list-ratings" ng-cancel-drag>
+                                                                                <a href="javascript:;" style="display: inline!important;overflow: visible!important;" ng-cancel-drag ng-click="clearTaskGroupRating(userTaskSubGroup)">
+                                                                                    <span class="glyphicon glyphicon-remove"></span>
+                                                                                </a>
+                                                                                <rating id="listRatings" ng-cancel-drag ng-model="userTaskSubGroup.Rating" ng-click="updateTaskGroupRating(userTaskSubGroup)" max="max" on-hover="hoveringOver(value)" on-leave="overStar = null"></rating>
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
 															<tk-reassign-supervisor task-list="userTaskSubGroup"></tk-reassign-supervisor>
 															<tk-assign-service-tech task-list="userTaskSubGroup"></tk-assign-service-tech>
 															<tk-assign-subcontractor task-list="userTaskSubGroup"></tk-assign-subcontractor>
@@ -1435,25 +1435,25 @@
 											<div class="panel-group" style="margin-bottom: 0px;">
 												<ul class="list-group" ng-repeat="userTaskSubGroup in userTaskGroup.GroupSubGroups track by userTaskSubGroup.RowId" style="margin-bottom:0px;">
 													<li class="task-group" style="margin-bottom: 0px;" ng-if="userTaskSubGroup.TaskCount > 0" id="task-group-{{userTaskSubGroup.RowId}}">
-														<div class="title" style="border: none;">
-															<div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;" ng-drag="true" ng-drag-data="userTaskSubGroup"><i class="glyphicon glyphicon-list" style="position: relative;"></i></div>
-															<div class="title-container">
-																<div class="inner">
-																	<a style="cursor: default; text-decoration: none;"><strong>{{userTaskSubGroup.Title}}</strong></a>
-																	<span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
-																	<span ng-if="userTaskSubGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskSubGroup.ListProDisplayName}}</span>
-																</div>
-															</div>
-															<div class="pull-right" style="position: relative; top: 20px;">
+                                                        <div class="title" style="border: none;" ng-drag="true" ng-drag-data="userTaskSubGroup">
+                                                            <div class="pull-left" style="height: 16px; width: 16px; margin-top: 20px; margin-right: 13px;"><i class="glyphicon glyphicon-list" style="position: relative;"></i></div>
+                                                            <div class="title-container">
+                                                                <div class="inner">
+                                                                    <a style="cursor: default; text-decoration: none;"><strong>{{userTaskSubGroup.Title}}</strong></a>
+                                                                    <span ng-if="userTaskSubGroup.IsProLinkedList" class="list-client-name">Client Name: {{userTaskSubGroup.ListClientDisplayName}}</span>
+                                                                    <span ng-if="userTaskSubGroup.IsClientLinkedList" class="list-client-name">Service Provider: {{userTaskSubGroup.ListProDisplayName}}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div class="pull-right" style="position: relative; top: 20px;">
                                                                 <i class="glyphicon glyphicon-envelope" style="position: absolute; right: 72px; top: 2px;" ng-click="getListMessages(userTaskSubGroup)" ng-if="userTaskSubGroup.MessagesCount > 0" data-toggle="tooltip" data-placement="top" title="Messages"></i>
-																<span style="font-size: 10px; position: absolute; right: 62px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskSubGroup.MessagesCount > 0}" ng-bind="userTaskSubGroup.MessagesCount" ng-if="userTaskSubGroup.MessagesCount > 0"></span>
-																<span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskSubGroup.TaskCount"></span>
-																<div ng-show="userTaskSubGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
-																	<i class="glyphicon glyphicon-remove-circle" ng-click="userTaskSubGroup.isMessagesOpen = !userTaskSubGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
-																	<tk-user-task-messages parent-row-id="userTaskSubGroup.RowId" parent-type="2"></tk-user-task-messages>
-																</div>
-															</div>
-														</div>
+                                                                <span style="font-size: 10px; position: absolute; right: 62px; top: -5px;" class="badge badge-header" ng-class="{'badge-warning': userTaskSubGroup.MessagesCount > 0}" ng-bind="userTaskSubGroup.MessagesCount" ng-if="userTaskSubGroup.MessagesCount > 0"></span>
+                                                                <span style="position: absolute; right: 36px; top: 0;" class="badge badge-success" ng-bind="userTaskSubGroup.TaskCount"></span>
+                                                                <div ng-show="userTaskSubGroup.isMessagesOpen" class="dropdown-menu" style="right: 90px; top: 14px;">
+                                                                    <i class="glyphicon glyphicon-remove-circle" ng-click="userTaskSubGroup.isMessagesOpen = !userTaskSubGroup.isMessagesOpen" style="position: absolute; top: 3px; right: 5px; font-size: 1em; width: auto; z-index: 999;"></i>
+                                                                    <tk-user-task-messages parent-row-id="userTaskSubGroup.RowId" parent-type="2"></tk-user-task-messages>
+                                                                </div>
+                                                            </div>
+                                                        </div>
 														<div id="collapse{{userTaskSubGroup.RowId}}">
 															<div ui-sortable="sortableTasksOpts" ng-model="userTaskSubGroup.GroupTasks" class="sortable-tasks" data-parent-row-id="{{userTaskSubGroup.RowId}}">
 																<div ng-if="userTaskSubGroup.open" class="panel" ng-repeat="userTask in userTaskSubGroup.GroupTasks track by userTask.RowId" ng-hide="taskLists.isLoading" ng-class="{'first': $first}">

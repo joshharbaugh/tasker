@@ -11,7 +11,8 @@ angular.module('myVillages.tasker.app.userTask')
                     headers: {
                         'IntegratorAppSecret': DM_API_KEY
                     },
-                    params: { CustId: custId }
+                    params: { CustId: custId },
+                    cache: true
                 }).then(function (result) {
                     deferred.resolve(result.data);
                 }, function (result) {
@@ -43,7 +44,7 @@ angular.module('myVillages.tasker.app.userTask')
                 var deferred = $q.defer();
                 $http({ 
                     method: 'POST', 
-                    url: dmEndpoint + 'Service/SubmitServiceRequest',
+                    url: dmEndpoint + 'Service/Estimates/Update',
                     headers: {
                             'IntegratorAppSecret': DM_API_KEY
                     },

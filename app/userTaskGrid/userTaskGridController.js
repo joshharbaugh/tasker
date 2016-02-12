@@ -1,7 +1,7 @@
 angular.module('myVillages.tasker.app.userTaskGrid').
     controller('UserTaskGridController', ['$scope', '$http', '$interval', '$httpBackend', 'uiGridTreeViewConstants', 'uiGridGroupingConstants',
-    'authService', '$q', '$routeParams', 'userTaskGridDataService', 'uiGridConstants', 'userTaskGridService',
-    function ($scope, $http, $interval, $httpBackend, uiGridTreeViewConstants, uiGridGroupingConstants, authService, $q, $routeParams, userTaskGridDataService, uiGridConstants, userTaskGridService) {
+    'authService', '$q', '$routeParams', 'userTaskGridDataService', 'uiGridConstants', 'userTaskGridService','$modalInstance',
+    function ($scope, $http, $interval, $httpBackend, uiGridTreeViewConstants, uiGridGroupingConstants, authService, $q, $routeParams, userTaskGridDataService, uiGridConstants, userTaskGridService, $modalInstance) {
         var that = this;
         that.sortedIndexedTasksAndGroups = [];
         that.filterApplied = false;
@@ -123,6 +123,42 @@ angular.module('myVillages.tasker.app.userTaskGrid').
             $scope.isSaveIndexEnabled = false;
         };
         $scope.gridOptions = userTaskGridService.getUserTaskGridOptions($scope);
+
+        $scope.ok = function (result) {
+            $modalInstance.close($scope.dt.value);
+        };
+
+        $scope.cancel = function (result) {
+            $modalInstance.close('cancel');
+        };
+
+        $scope.today = function () {
+            $scope.dt = {
+                value: new Date()
+            };
+        };
+        $scope.today();
+
+        $scope.toggleMin = function () {
+            $scope.minDate = new Date();
+        };
+        $scope.toggleMin();
+
+        $scope.open = function ($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+
+            $scope.opened = {
+                value: true
+            };
+        };
+        $scope.initDate = new Date();
+        $scope.dateOptions = {
+            formatYear: 'yy',
+            startingDay: 1
+        };
+
+
         loadUserTasksGrid();
 
     }]);

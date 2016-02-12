@@ -65,16 +65,11 @@
                 });
             };
 
-            this.getSortedTasksAndGroups = function(scope) {
+            this.getTasksAndGroups = function(scope) {
                 var deferred = $q.defer();
                 scope.loading = true;
                 var userTaskSearchArgs = {
-                    SearchType: 1, // search user tasks
-                    TaskUserRowId: $routeParams.clientId ? $routeParams.clientId : authService.getAuthInfo().userRowId,
-                    Keyword: '',
-                    Status: -1,
-                    IsFiltersLoaded: true,
-                    TaskQueue: 1
+                    AssignedUserId: $routeParams.clientId ? $routeParams.clientId : authService.getAuthInfo().userRowId
                 };
                 var userTaskPromise = userTaskGridDataService.getAllForGrid(userTaskSearchArgs);
                 var serviceTechsPromise;

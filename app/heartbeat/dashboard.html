@@ -1,6 +1,4 @@
-﻿<script src="//cdnjs.cloudflare.com/ajax/libs/packery/1.4.3/packery.pkgd.min.js"></script>
-<script src="//npmcdn.com/draggabilly@2.1/dist/draggabilly.pkgd.js"></script>
-<link href="/Content/site/heartbeat.css" rel="stylesheet" />
+﻿<link href="/Content/site/heartbeat.css" rel="stylesheet" />
 <script type="text/ng-template" id="sendMessageModal.html">
     <div class="modal-header">
         <h1 class="modal-title">Send Message</h1>
@@ -95,27 +93,15 @@
 <div class="container" style="width:100%;max-width:100%">
     <div class="row" ng-repeat="(row_name, row) in dashboard.rows" row-height style="min-height: 250px;">
         <div class="panels-wrapper">
-            <div ng-repeat="(name, panel) in row.panels track by panel.id" class="panel panel-default">
-                <div class="panel-heading">
-                    <h3 class="panel-title">
-                        <a data-toggle="collapse" data-target="#panel_recent_activity" href="javascript:;"><em class="hidden-xs glyphicon glyphicon-move handle"></em> Recent Activity <span data-ng-show="isLoading" class="pull-right"><i class="glyphicon glyphicon-refresh animated"></i></span></a>
-                    </h3>
-                </div>
-                <div class="panel-collapse collapse in" id="panel_recent_activity">
-                    <div class="panel-body" style="padding-bottom: 0">
-                        body content
-                    </div>
-                </div>
+            <div ng-repeat="(name, panel) in row.panels track by $index">
+                <div ng-switch on="panel.name">
+                    <div ng-switch-when="Recent activity" recent-activity ng-drag="true" ng-drag-data="panel" data-allow-transform="true" ng-drop="true" ng-drop-success="onDropComplete($data, row, panel, $event)" class="col-xs-12 col-sm-6 col-md-4" ng-model="dashboard['recent-activity']" user-data="user"></div>
+                    <div ng-switch-when="Estimates requested" estimates-requested ng-drag="true" ng-drag-data="panel" data-allow-transform="true" ng-drop="true" ng-drop-success="onDropComplete($data, row, panel, $event)" class="col-xs-12 col-sm-6 col-md-4" ng-model="dashboard['estimates-requested']" user-data="user"></div>
+                    <div ng-switch-when="Recent messages" recent-messages ng-drag="true" ng-drag-data="panel" data-allow-transform="true" ng-drop="true" ng-drop-success="onDropComplete($data, row, panel, $event)" class="col-xs-12 col-sm-6 col-md-4" ng-model="dashboard['recent-messages']" user-data="user"></div>
+                    <div ng-switch-when="Client reminders" client-reminders ng-drag="true" ng-drag-data="panel" data-allow-transform="true" ng-drop="true" ng-drop-success="onDropComplete($data, row, panel, $event)" class="col-xs-12 col-sm-6 col-md-4" ng-model="dashboard['client-reminders']" user-data="user"></div>
+                    <div ng-switch-when="Technician status updates" tech-status-updates ng-drag="true" ng-drag-data="panel" data-allow-transform="true" ng-drop="true" ng-drop-success="onDropComplete($data, row, panel, $event)" class="col-xs-12 col-sm-6 col-md-4" ng-model="dashboard['tech-status-updates']" user-data="user"></div>
+                </div>                
             </div>
         </div>
-    </div>
-</div>
-<div class="container" style="width:100%;max-width:100%;">
-    <div class="row" id="layout">
-        <div class="col-xs-12 col-sm-6 col-md-4" recent-activity ng-model="dashboard['recent_activity']" user-data="user"></div>
-        <div class="col-xs-12 col-sm-6 col-md-4" estimates-requested ng-model="dashboard['estimates_requested']" user-data="user"></div>
-        <div class="col-xs-12 col-sm-6 col-md-4" recent-messages ng-model="dashboard['recent_messages']" user-data="user"></div>
-        <div class="col-xs-12 col-sm-6 col-md-4" client-reminders ng-model="dashboard['client_reminders']" user-data="user"></div>
-        <div class="col-xs-12 col-sm-6 col-md-4" tech-status-updates ng-model="dashboard['tech_status_updates']" user-data="user"></div>        
     </div>
 </div>

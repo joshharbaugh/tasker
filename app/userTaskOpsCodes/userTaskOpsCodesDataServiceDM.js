@@ -10,7 +10,8 @@
                     url: dmEndpoint + 'Service/WorkOrders/RetrieveOperations',
                     headers: {
                             'IntegratorAppSecret': DM_API_KEY
-                    }
+                    },
+                    cache: true
                 }).then(function (result) {
                     deferred.resolve(result.data);
                 }, function (result) {

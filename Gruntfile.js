@@ -1,10 +1,15 @@
 'use strict';
 
-var createTplBundle = require('./lib/templates/create-tpl-bundle'),
-    stat = require('./lib/stat/stat'),
-    when = require('when')
+try {
+    var createTplBundle = require('./lib/templates/create-tpl-bundle'),
+        stat = require('./lib/stat/stat'),
+        when = require('when')
+} catch(e) {}
 
 module.exports = function (grunt) {
+
+    // Load grunt tasks automatically
+    require('load-grunt-tasks')(grunt);
 
     /*** Configure our grunt tasks ***/
 
@@ -206,6 +211,8 @@ module.exports = function (grunt) {
                     "app/common/directives/breadcrumbsDirective.js",
                     "app/common/directives/stickyDirective.js",
                     "app/common/directives/workspaceDirective.js",
+                    "app/common/directives/opCodesSelect.js",
+                    "app/common/directives/clientWorkOrders.js",
 
                     "app/common/services/authService.js",
                     "app/common/services/authInterceptorService.js",
@@ -215,8 +222,11 @@ module.exports = function (grunt) {
 
                     "app/models/model.userTask.js",
                     "app/userTask/userTaskManagerController.js",
+                    "app/userTask/parentGridController.js",
+                    "app/userTask/parentGridService.js",
                     "app/userTask/userTaskGridController.js",
                     "app/userTask/userTaskDataService.js",
+                    "app/userTask/userTaskGridService.js",
                     "app/userTask/userTaskDataServiceDM.js",
                     "app/userTask/userTasksUserXrefDataService.js",
                     "app/userTask/userTaskDirective.js",
@@ -371,6 +381,33 @@ module.exports = function (grunt) {
             }
         },
 
+        copy : {
+            dev : {
+                files : [
+                    {
+                        expand: true,
+                        src: [],
+                        dest: '<%= build.dev.assets %>',
+                        flatten : true
+                    }
+                ]
+            },
+
+            prod : {
+                files : [
+                    {
+                        expand: true,
+                        src: [
+                            '<%= src.assets.icons %>',
+                            '<%= src.assets.fonts %>'
+                        ],
+                        dest: '<%= build.prod.assets %>',
+                        flatten : true
+                    }
+                ]
+            }
+        },
+
         browserify: {
             templatesDev : {
                 options : {
@@ -477,16 +514,15 @@ module.exports = function (grunt) {
     grunt.registerTask('serve', ['ngtemplates', 'concat', 'uglify:dist', 'watch']);
     grunt.registerTask('testLocal', ['karma:local']);
 
+
+    /* Begin new tasks for refactor */
     grunt.registerMultiTask('manifest', 'Creates a compressed package of the application', function() {
         var done = this.async(),
             target = this.target,
             manifestFile = grunt.config.process('<%= build.' + target + '.manifest %>'),
             manifest = grunt.file.exists(manifestFile) ? when(grunt.file.readJSON(manifestFile)) : stat()
-        console.log('"target"', target)
-        console.log('"manifestFile"', manifestFile)
-        console.log('"manifest"', manifest)
+
         manifest.then(function(data) {
-            console.log('"fversion"', data.fversion)
             grunt.config.set('fversion', data.fversion)
             grunt.file.write(manifestFile, JSON.stringify(data))
             done()
@@ -533,13 +569,13 @@ module.exports = function (grunt) {
     //loading our custom tasks
     createTplBundle(grunt)
 
-    grunt.loadNpmTasks('grunt-karma')
-    grunt.loadNpmTasks('grunt-config')
-    grunt.loadNpmTasks('grunt-contrib-copy')
-    grunt.loadNpmTasks('grunt-contrib-clean')
-    grunt.loadNpmTasks('grunt-browserify')
-    grunt.loadNpmTasks('grunt-contrib-uglify')
-    grunt.loadNpmTasks('grunt-contrib-watch')
-    grunt.loadNpmTasks('grunt-contrib-compress')
-    grunt.loadNpmTasks('grunt-newer')
+    // grunt.loadNpmTasks('grunt-karma')
+    // grunt.loadNpmTasks('grunt-config')
+    // grunt.loadNpmTasks('grunt-contrib-copy')
+    // grunt.loadNpmTasks('grunt-contrib-clean')
+    // grunt.loadNpmTasks('grunt-browserify')
+    // grunt.loadNpmTasks('grunt-contrib-uglify')
+    // grunt.loadNpmTasks('grunt-contrib-watch')
+    // grunt.loadNpmTasks('grunt-contrib-compress')
+    // grunt.loadNpmTasks('grunt-newer')
 };

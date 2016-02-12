@@ -11,7 +11,7 @@
 			<div>
 				<h4>On Behalf Of:</h4>
 				<div style="height: 30px;">
-					<a href="#" editable-text="selectedClient" e-typeahead="x as x.TypeaheadDisplay for x in suggestAuthorizedClient($viewValue)" e-style="width: 350px!important" e-required e-placeholder="Enter Client name or email" onbeforesave="assignClient($data)">{{ selectedClient.TypeaheadDisplay || "Select Client" }}</a>
+                    <a href="#" editable-text="selectedClient" e-typeahead="x as x.TypeaheadDisplay for x in suggestAuthorizedClient($viewValue)" e-style="width: 350px!important" e-required e-placeholder="Enter Client name or email" e-typeahead-wait-ms="500" onbeforesave="assignClient($data)">{{ selectedClient.TypeaheadDisplay || "Select Client" }}</a>
 				</div>
 			</div>
 		</div>
@@ -27,31 +27,19 @@
 							</label>
 						</div>
 					</div>
-					<div class="col-sm-6" style="padding-top: 0px;">
-						<div>
-							<h4>Link Work Order from Dock Master:</h4>
-							<div style="height: 30px;display: inline-block;">
-								<select ng-disabled="!newUserTask.IsWorkOrder" class="form-control input-sm" style="width: 292px;" ng-change="toggleWorkOrderDropdowns('workorder')" ng-model="newUserTask.selectedWorkOrderToLink" ng-options="workOrder as workOrder.Customer + ' ' + workOrder.Id + ' ' + workOrder.OpenDate for workOrder in newUserTask.ClientWorkOrders"></select>
-							</div>
-						</div>
-						<div style="font-weight: bold; padding-left: 10px;"><h4>- Or -</h4></div>
-						<div>
-							<h4>Op Codes</h4>
-							<select ng-disabled="!newUserTask.IsWorkOrder"
-									data-drop-auto="false"
-									class="selectpicker"
-									data-show-subtext="true"
-									data-live-search="true"
-									selectpicker
-									multiple
-									data-selected-text-format="count>3"
-									ng-change="toggleWorkOrderDropdowns('opcode')"
-									ng-model="newUserTask.FirstOpCode"
-									ng-options="OpCode as OpCode.Desc for OpCode in newUserTask.ClientOpCodes">
-								<option value="">Select Op Codes</option>
-							</select>
-						</div>
-					</div>
+                    <div class="col-sm-6" style="padding-top: 0px;" ng-if="newUserTask.IsWorkOrder">
+                        <div>
+                            <h4>Link Work Order from Dock Master:</h4>
+                            <div style="height: 30px;display: inline-block;">
+                                <tk-client-work-orders view-model="newUserTask" dm-endpoint="dmEndpoint" ng-if="newUserTask.IsWorkOrder"></tk-client-work-orders>                                
+                            </div>
+                        </div>
+                        <div style="font-weight: bold; padding-left: 10px;"><h4>- Or -</h4></div>
+                        <div>
+                            <h4>Create New Work Order Estimate</h4>
+                            <tk-op-codes-select view-model="newUserTask" dm-endpoint="dmEndpoint" ng-if="newUserTask.IsWorkOrder"></tk-op-codes-select>
+                        </div>
+                    </div>
 				</div>
 				<h4>Request Approval: <label>(optional)</label></h4>
 				<div class="request-estimate">
@@ -91,7 +79,10 @@
 			<div>
 				<button class="btn btn-warning btn-block" ng-click="cancelCreateOnBehalf()"><i class="glyphicon glyphicon-remove"></i>&nbsp;Cancel</button>
 				<button class="btn btn-success btn-block" ng-click="prePostClientTask()" ng-disabled="isCreateTaskButtonDisabled()">
-					<span ng-if="newUserTask.IsWorkOrder"><i class="glyphicon glyphicon-ok"></i>&nbsp;Create Work Order Estimate</span>
+					<span ng-if="newUserTask.IsWorkOrder">
+                       <i class="glyphicon glyphicon-ok"></i>
+                        <span>{{newUserTask.createWO}}</span>
+                    </span>
 					<span ng-if="!newUserTask.IsWorkOrder"><i class="glyphicon glyphicon-ok"></i>&nbsp;Create Task</span>
 				</button>
 			</div>

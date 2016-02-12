@@ -18,7 +18,7 @@
     "ng-mask": "^3.0.12",
     "postal": "1.0.7",
     "postal.diagnostics": "~0.7.0",
-    "ui-select": "0.14.2"
+    "ui-select": "git+https://github.com/joshharbaugh/ui-select.git"
   },
   "devDependencies": {
     "angular-ui-mask": "^1.2.0",

@@ -84,6 +84,17 @@
         		return deferred.promise;
         	};
 
+        	var getUserToys = function (searchArgs) {
+        		var deferred = $q.defer();
+        		$http.get(API_BASE_URL + 'usertask/usertoys', { params: searchArgs }).then(function (result) {
+        			deferred.resolve(result.data);
+        		}, function (result) {
+        			toastr.error(result.statusText);
+        			deferred.reject(result.data);
+        		});
+        		return deferred.promise;
+        	};
+
         	var getEquipmentUsage = function (equpmentId) {
         		var deferred = $q.defer();
         		$http.get(API_BASE_URL + 'usertask/equipment/usage/' + equpmentId).then(function (result) {
@@ -579,6 +590,7 @@
         		removeGroupUserTasksById: removeGroupUserTasksById,
         		getToyEquipment: getToyEquipment,
         		getAllFeedback: getAllFeedback,
+        		getUserToys: getUserToys,
         		getEquipmentUsage: getEquipmentUsage,
         		saveFeedback: saveFeedback,
         		getAllNotes: getAllNotes,

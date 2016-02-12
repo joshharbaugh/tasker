@@ -16,7 +16,7 @@
     		controller: ['$scope', '$sce', 'userTaskDataService', 'dataService', 'userTaskEquipment', '$q', '$window', '$filter', '$timeout',
 				function ($scope, $sce, userTaskDataService, dataService, userTaskEquipment, $q, $window, $filter, $timeout) {
 
-					if ($scope.selectedToyRowId) {
+					function setActiveEquipment() {
 						getToyEquipment().then(function (result) {
 							angular.forEach($scope.toyEquipment, function (eq) {
 								var isActive = $scope.activeEquipmentIdsList.indexOf(eq.RowId) > -1;
@@ -102,10 +102,15 @@
 						saveBoatEquipment: saveBoatEquipment,
 						clearToyEqupment: clearToyEqupment,
 						removeEqupment: removeEqupment,
+						setActiveEquipment: setActiveEquipment,
 					});
 
 				}],
     		link: function (scope, element, attrs, ctrl) {
+    			if (scope.selectedToyRowId) {
+    				scope.setActiveEquipment();
+    			};
+
     		}
     	};
     }]);

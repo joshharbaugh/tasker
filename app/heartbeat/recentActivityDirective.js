@@ -3,7 +3,7 @@
 angular.module('myVillages.tasker.app.heartbeat.directives')
     .directive('recentActivity', ['$http', '$sce', 'API_BASE_URL', 'heartBeatInterval', '$rootScope', function ($http, $sce, API_BASE_URL, heartBeatInterval, $rootScope) {
     	return {
-    		restrict: 'A'
+    		restrict: 'AC'
             , requires: '^datetimeFilters'
             , replace: true
             , scope: {

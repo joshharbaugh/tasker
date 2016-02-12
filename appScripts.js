@@ -1,4 +1,5 @@
-﻿var appScriptFiles = [
+﻿/// <reference path="app/userTaskGrid/parentGridController.js" />
+var appScriptFiles = [
 
     "initNs.js",
     "app.js",
@@ -12,6 +13,8 @@
     "common/directives/breadcrumbsDirective.js",
     "common/directives/stickyDirective.js",
     "common/directives/workspaceDirective.js",
+    "common/directives/opCodesSelect.js",
+    "common/directives/clientWorkOrders.js",
 
     "common/services/authService.js",
     "common/services/authInterceptorService.js",
@@ -27,11 +30,11 @@
     "userTask/userTasksUserXrefDataService.js",
     "userTask/userTaskDirective.js",
     "userTask/createTaskDirective.js",
-
     "userTaskGrid/userTaskGridController.js",
     "userTaskGrid/userTaskGridDataService.js",
     "userTaskGrid/userTaskGridService.js",
-
+    "userTaskGrid/parentGridController.js",
+    "userTaskGrid/parentGridService.js",
     "bulkActionsMenu/bulkActionsMenuDirective.js",
     "assignListTasks/assignListTasksDirective.js",
     "reassignSupervisor/reassignSupervisorDirective.js",

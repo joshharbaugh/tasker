@@ -53,19 +53,31 @@
         		handle: ' .handle'
         	};
 
+            //-- ui-sortable
+        	var taskHandle,
+                taskListHandle,
+                dragDistance,
+                taskSortDelay;
+
         	if ($rootScope.isMobile) {
-        		var taskHandle = '.glyphicon-move',
-        	        taskSortDelay = 500; // for swiping on mobile
+        	    taskHandle = '.glyphicon-move',
+                taskListHandle = '.title .glyphicon-list',
+                dragDistance = 10, // only start dragging if the element moves 10 pixels
+        	    taskSortDelay = 500; // for swiping on mobile
         	}
         	else {
-        		var taskHandle = '.task-header',
-        	        taskSortDelay = 0; // no delay for desktops
+        	    taskHandle = '.task-header',
+                taskListHandle = '.task-group .title',
+                dragDistance = 10, // only start dragging if the element moves 10 pixels
+        	    taskSortDelay = 0; // no delay for desktops
         	}
 
+            // standard tasks
         	$scope.sortableTasksOpts = {
         		delay: taskSortDelay,
         		connectWith: '.sortable-tasks',
         		handle: taskHandle,
+        		distance: dragDistance,
         		stop: function (e, ui) {
         			var data = ui.item.sortable,
                         model = data.model,
@@ -124,10 +136,12 @@
         		}
         	};
 
+            // shared tasks
         	$scope.sortableSharedTasksOpts = {
         		delay: taskSortDelay,
         		connectWith: '.sortable-shared-tasks',
         		handle: taskHandle,
+        		distance: dragDistance,
         		stop: function (e, ui) {
         			var data = ui.item.sortable
         			if (!data.droptargetModel) return
@@ -149,10 +163,12 @@
         		}
         	};
 
+            // task lists
         	$scope.sortableListsOpts = {
         		delay: taskSortDelay,
         		connectWith: '.sortable-lists',
-        		handle: '.title .glyphicon-list',
+        		handle: taskListHandle,
+        		distance: dragDistance,
         		stop: function (e, ui) {
         			var data = ui.item.sortable,
                         model = data.model,
@@ -207,6 +223,7 @@
         			})
         		}
         	};
+            //-- end ui-sortable
 
         	$scope.$watch('panels', function (panels) {
         		if (panels) {

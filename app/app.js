@@ -68,8 +68,8 @@
 
     		$routeProvider.when('/tasksgrid',
             {
-                templateUrl: '/Scripts/tasker/app/userTaskGrid/userTaskGrid.html',
-                controller: 'UserTaskGridController',
+                templateUrl: '/Scripts/tasker/app/userTaskGrid/parentGrid.html',
+                controller: 'ParentGridController',
                 reloadOnSearch: false
             });
 
@@ -200,7 +200,7 @@
     angular.module('myVillages.tasker.app.heartbeat.directives', []);
     angular.module('myVillages.tasker.app.azureServiceBus', []);
 
-    angular.module('myVillages.tasker.app.userTaskGrid', [
+    angular.module('myVillages.tasker.app.userTaskGrid', ['ui.bootstrap',
     'ngTouch', 'ui.grid', 'ui.grid.expandable', 'ui.grid.moveColumns', 'ui.grid.selection',
      'ui.grid.treeView', 'ui.grid.pinning', 'ui.grid.exporter', 'ui.grid.resizeColumns', 'ui.grid.grouping'
     ]);
